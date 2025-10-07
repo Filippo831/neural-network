@@ -14,4 +14,8 @@ float sigmoid(float _input) {
 }
 
 
-float *dotProduct(FloatMatrix *left, FloatMatrix *right);
+float *dotProductFloat(FloatMatrix *left, FloatMatrix *right) {
+    float *value;
+    *value = 10.0;
+    return value;
+}

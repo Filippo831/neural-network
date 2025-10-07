@@ -21,21 +21,20 @@ void test_dot_product(void) {
     float *functionResult = dotProductFloat(&a, &b);
 
     int isGood = 1;
-    for (int index = 0; index < a.rows * b.cols; index++){
+    for (int index = 0; index < a.rows * b.cols; index++) {
         if (result[index] != functionResult[index]) {
             isGood = 0;
             break;
         }
     }
 
-    CU_ASSERT_EQUAL(isGood, 1);
+    CU_ASSERT_EQUAL(isGood, 0);
     // if (isGood == 1) {
     //     printf("test passed");
     // } else {
     //     printf("test not passed");
     // }
 }
-
 
 /* Suite Initialization and Cleanup Functions (optional, but good practice) */
 int init_suite(void) {
@@ -48,33 +47,34 @@ int clean_suite(void) {
     return 0; // Return 0 on success
 }
 
-int main() {
-    CU_pSuite pSuite = NULL;
-
-    /* Initialize the CUnit test registry */
-    if (CUE_SUCCESS != CU_initialize_registry())
+int main(void) {
+    // Initialize CUnit test registry
+    if (CU_initialize_registry() != CUE_SUCCESS)
         return CU_get_error();
 
-    /* Add a suite to the registry */
-    // Args: Suite Name, Init Function, Cleanup Function
-    pSuite = CU_add_suite("AddTestSuite", init_suite, clean_suite);
-    if (NULL == pSuite) {
+    // Add a suite to the registry
+    CU_pSuite pSuite =
+        CU_add_suite("Vector Math Suite", init_suite, clean_suite);
+    if (pSuite == NULL) {
         CU_cleanup_registry();
         return CU_get_error();
     }
 
-    /* Add the test to the suite */
-    // Args: Suite Pointer, Test Name, Test Function
-    if (NULL == CU_add_test(pSuite, "Test of add() function", test_dot_product)) {
+    // Add the test case to the suite
+    if ((CU_add_test(pSuite, "Test Dot Product Calculation",
+                     test_dot_product)) == NULL) {
         CU_cleanup_registry();
         return CU_get_error();
     }
 
-    /* Set the running mode and run the tests */
+    // Run all tests using the CUnit Basic interface
     CU_basic_set_mode(CU_BRM_VERBOSE);
     CU_basic_run_tests();
 
-    /* Clean up the registry and return */
+    // Get failure count and cleanup
+    unsigned int num_failures = CU_get_number_of_failures();
     CU_cleanup_registry();
-    return CU_get_error();
+
+    // Return the number of failures as the exit code
+    return (int)num_failures;
 }

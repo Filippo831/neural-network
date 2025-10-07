@@ -11,4 +11,3 @@ typedef struct FloatMatrix {
 float sigmoid(float _input);
 
 float *dotProductFloat(FloatMatrix *left, FloatMatrix *right);
-

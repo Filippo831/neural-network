@@ -1,77 +1,123 @@
-# --- Configuration ---
-CC = gcc
-CFLAGS = -Wall -Wextra -Iinclude -std=c11
-LDFLAGS = -lm
-# For debugging/optimization: -g or -O2
-# CFLAGS += -g
-# CFLAGS += -O2
+# --- Makefile Template for C Project with CUnit ---
 
-# --- Directories and Files ---
-SRC_DIR = src
-INCLUDE_DIR = include
-TEST_DIR = test
-BUILD_DIR = build
-BIN_DIR = bin
+# Directories:
+# - src/       : Main source files
+# - include/   : Header files
+# - tests/     : Test source files (must end with _test.c)
+# - build/     : Intermediate object files (.o)
+# - bin/       : Final executables
+# - lib/       : Placeholder for external libraries (optional)
 
-# Source files
-MAIN_SRCS = $(wildcard $(SRC_DIR)/*.c)
-TEST_SRCS = $(wildcard $(TEST_DIR)/*.c)
+# --- 1. Configuration Variables ---
 
-# Object files
-MAIN_OBJS = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(MAIN_SRCS))
-TEST_OBJS = $(patsubst $(TEST_DIR)/%.c,$(BUILD_DIR)/test_%.o,$(TEST_SRCS)) # Add prefix to test objects
+# Project Name (used for the final executable name)
+PROJECT_NAME := my_c_project
 
-# Executables
-TARGET_EXEC = $(BIN_DIR)/app
-TEST_EXEC = $(BIN_DIR)/run_tests
+# Compiler and standard flags
+CC := gcc
+STD_CFLAGS := -Wall -Wextra -std=c11 -g
 
+# CFLAGS for release/optimized build
+CFLAGS := $(STD_CFLAGS) -O2
 
-# --- Main Targets ---
+# Directory paths
+SRCDIR := src
+INCLDIR := include
+BUILDDIR := build
+BINDIR := bin
+TESTDIR := tests
+LIBDIR := lib
 
-.PHONY: all $(BUILD_DIR) $(BIN_DIR) clean test
+# CUnit Linker and Include Flags
+LDFLAGS_CUNIT := -lcunit
 
-# Default target: builds the main application
-all: $(BUILD_DIR) $(BIN_DIR) $(TARGET_EXEC)
+# Include search paths for headers
+INCLUDES := -I$(INCLDIR)
 
-# Target to build and run tests
-test: $(BUILD_DIR) $(BIN_DIR) $(TEST_EXEC)
-	@echo "--- Running tests ---"
-	@./$(TEST_EXEC)
+# Standard Linker flags (e.g., -lm for math)
+LDFLAGS := -lm
 
-# Target to build the main executable
-$(TARGET_EXEC): $(MAIN_OBJS)
-	@echo "Linking $@"
-	$(CC) $(LDFLAGS) $^ -o $@
+# --- 2. Source and Object Lists ---
 
-# Target to build the test executable
-$(TEST_EXEC): $(MAIN_OBJS) $(TEST_OBJS)
-	@echo "Linking $@"
-	# Note: Link all app objects and test objects. You might need a testing framework library (e.g., -lcunit)
-	$(CC) $(LDFLAGS) -lcunit $^ -o $@
+# Find all source files in the source directory
+SRC_FILES := $(wildcard $(SRCDIR)/*.c)
 
-# --- Compilation Rules ---
+# Define ALL object file paths in the build directory
+OBJ_FILES := $(patsubst $(SRCDIR)/%.c, $(BUILDDIR)/%.o, $(SRC_FILES))
 
-# Rule for building application objects (.o) from .c files in src/
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
-	@echo "Compiling $<"
-	$(CC) $(CFLAGS) -c $< -o $@
+# --- FIX FOR MULTIPLE MAIN DEFINITION ---
+# 1. Identify the application's main object file (assuming src/main.c)
+APP_MAIN_OBJECT := $(BUILDDIR)/main.o
 
-# Rule for building test objects (.o) from .c files in test/
-# We use a distinct name to avoid collision if a test file had the same name as a src file (e.g., main.c)
-$(BUILD_DIR)/test_%.o: $(TEST_DIR)/%.c | $(BUILD_DIR)
-	@echo "Compiling $<"
-	$(CC) $(CFLAGS) -c $< -o $@
+# 2. Define the list of application objects needed for tests (ALL objects excluding main.o)
+# This prevents the application's main() from conflicting with the test runner's main()
+APP_TEST_OBJS := $(filter-out $(APP_MAIN_OBJECT), $(OBJ_FILES))
+# --- END FIX ---
 
-# --- Utility Targets ---
+# Test-specific files
+TEST_SRC_FILES := $(wildcard $(TESTDIR)/*_test.c)
 
-# Create the build and bin directories if they don't exist
-$(BUILD_DIR):
+# Define test object file paths (distinguished from main objects)
+TEST_OBJ_FILES := $(patsubst $(TESTDIR)/%.c, $(BUILDDIR)/%.test.o, $(TEST_SRC_FILES))
+
+# Executable names
+MAIN_EXECUTABLE := $(BINDIR)/$(PROJECT_NAME)
+TEST_RUNNER := $(BINDIR)/$(PROJECT_NAME)_test
+
+# --- 3. Targets ---
+
+.PHONY: all main tests clean rebuild dirs debug
+
+# Default target: builds the main executable
+all: main
+
+# Target to ensure build and bin directories exist (Prerequisite)
+$(BUILDDIR) $(BINDIR):
 	@mkdir -p $@
 
-$(BIN_DIR):
-	@mkdir -p $@
+# --- 4. Main Application Build ---
 
-# Clean up build and bin directories
+main: $(MAIN_EXECUTABLE)
+
+$(MAIN_EXECUTABLE): $(OBJ_FILES) | $(BINDIR)
+	@echo "=================================================="
+	@echo "Linking main executable: $@"
+	$(CC) $^ $(LDFLAGS) -o $@
+
+# Rule to compile main source files into objects
+$(BUILDDIR)/%.o: $(SRCDIR)/%.c | $(BUILDDIR)
+	@echo "Compiling main: $< -> $@"
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+# --- 5. Testing Build and Run ---
+
+# Test runner target: builds and runs the tests
+tests: $(TEST_RUNNER)
+	@echo "=================================================="
+	@echo "Running tests with CUnit..."
+	@./$(TEST_RUNNER)
+
+# Linking the test runner: *** NOW USES APP_TEST_OBJS INSTEAD OF OBJ_FILES ***
+$(TEST_RUNNER): $(APP_TEST_OBJS) $(TEST_OBJ_FILES) | $(BINDIR)
+	@echo "Linking test runner: $@"
+	$(CC) $^ $(LDFLAGS) $(LDFLAGS_CUNIT) -o $@
+
+# Rule to compile test source files
+$(BUILDDIR)/%.test.o: $(TESTDIR)/%.c | $(BUILDDIR)
+	@echo "Compiling test: $< -> $@"
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+# --- 6. Utility Targets ---
+
 clean:
-	@echo "Cleaning build artifacts..."
-	@rm -rf $(BUILD_DIR) $(BIN_DIR)
+	@echo "Cleaning build and bin directories..."
+	@rm -rf $(BUILDDIR)
+	@rm -rf $(BINDIR)
+
+rebuild: clean all tests
+
+# Target to build with debug flags enabled
+debug:
+	@echo "Starting debug build..."
+	@make CFLAGS='$(STD_CFLAGS) -DDEBUG' clean all tests
+
