@@ -1,7 +1,7 @@
 # --- Configuration ---
 CC = gcc
 CFLAGS = -Wall -Wextra -Iinclude -std=c11
-LDFLAGS =
+LDFLAGS = -lm
 # For debugging/optimization: -g or -O2
 # CFLAGS += -g
 # CFLAGS += -O2
@@ -47,7 +47,7 @@ $(TARGET_EXEC): $(MAIN_OBJS)
 $(TEST_EXEC): $(MAIN_OBJS) $(TEST_OBJS)
 	@echo "Linking $@"
 	# Note: Link all app objects and test objects. You might need a testing framework library (e.g., -lcunit)
-	$(CC) $(LDFLAGS) $^ -o $@
+	$(CC) $(LDFLAGS) -lcunit $^ -o $@
 
 # --- Compilation Rules ---
 

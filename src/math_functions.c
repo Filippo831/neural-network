@@ -12,3 +12,6 @@ float sigmoid(float _input) {
     float result = 1 / (1 + exp(_input));
     return result;
 }
+
+
+float *dotProduct(FloatMatrix *left, FloatMatrix *right);
