@@ -26,7 +26,10 @@ float sigmoid(float _input);
  *   left: left matrix
  *   right: right matrix
  *
- *   return
+ *   @body
+ *   compute the dot product between 2 matrices
+ *
+ *   @return
  *   correct: return enum with error specific to this calculation
  */
 
@@ -37,3 +40,17 @@ typedef enum DotProductFloatErrors {
 
 DotProductFloatErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
                                       FloatMatrix *_result);
+
+/*
+ *  @param
+ *  _predicted: predicted values that came from the NN
+ *  _actual: right prediction
+ *
+ *  @body
+ *  compute the loss function using the MSE tecnique
+ *
+ *  @return
+ *  loss value
+ */
+
+float loss(FloatMatrix *_predicted, FloatMatrix *_actual);

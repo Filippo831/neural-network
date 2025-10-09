@@ -94,6 +94,41 @@ void test_dot_product_wrong_sizes(void) {
     CU_ASSERT_PTR_NULL(c.values); // Check that the values pointer is NULL or 0
 }
 
+void test_loss_function(void) {
+    // ------------------- Setup Data -------------------
+    FloatMatrix predicted;
+    float predictedValues[] = {1.5, 2.5, 3.5};
+    predicted.cols = 1;
+    predicted.rows = 3;
+    predicted.values = predictedValues;
+
+    FloatMatrix actual;
+    float actualValues[] = {1.0, 2.0, 3.0};
+    actual.cols = 1;
+    actual.rows = 3;
+    actual.values = actualValues;
+
+    // ------------------- Expected Result -------------------
+    // Calculated manually: ( (1.5-1.0)^2 + (2.5-2.0)^2 + (3.5-3.0)^2 ) / 3 = 0.25
+    float expectedLoss = 0.25; 
+
+    // ------------------- Calculate Loss -------------------
+    float calculatedLoss = loss(&predicted, &actual);
+
+    // ------------------- Check Result -------------------
+    // Use an absolute tolerance (epsilon) for floating point comparison 
+    // to avoid failures due to minor precision issues.
+    float tolerance = 1e-6; 
+
+    // CU_ASSERT_DOUBLE_EQUAL is typically the best choice for CUnit/similar frameworks
+    // CU_ASSERT_DOUBLE_EQUAL(calculatedLoss, expectedLoss, tolerance);
+
+    // If CU_ASSERT_DOUBLE_EQUAL isn't available, use this manual check:
+    int isGood = (fabs(calculatedLoss - expectedLoss) < tolerance);
+    CU_ASSERT_EQUAL(isGood, 1);
+}
+
+
 /* Suite Initialization and Cleanup Functions (optional, but good practice) */
 int init_suite(void) {
     // Setup logic here (e.g., initializing a resource)
@@ -118,7 +153,6 @@ int main(void) {
         return CU_get_error();
     }
 
-    // Add the test case to the suite
     if ((CU_add_test(pSuite, "Test Dot Product Calculation correct case",
                      test_dot_product_correct)) == NULL) {
         CU_cleanup_registry();
@@ -127,6 +161,12 @@ int main(void) {
 
     if ((CU_add_test(pSuite, "Test Dot Product Calculation wrong sizes case",
                      test_dot_product_wrong_sizes)) == NULL) {
+        CU_cleanup_registry();
+        return CU_get_error();
+    }
+
+    if ((CU_add_test(pSuite, "Test loss function",
+                     test_loss_function)) == NULL) {
         CU_cleanup_registry();
         return CU_get_error();
     }

@@ -36,7 +36,7 @@ DotProductFloatErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
             float intermediateResult = 0;
             for (int index = 0; index < _left->cols; index++) {
                 intermediateResult += getIndexMatrix(r, index, _left) *
-                              getIndexMatrix(index, c, _right);
+                                      getIndexMatrix(index, c, _right);
             }
             resultMatrix[matrixIndex++] = intermediateResult;
         }
@@ -47,4 +47,16 @@ DotProductFloatErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
 
     _result->values = resultMatrix;
     return NO_ERROR;
+}
+
+float loss(FloatMatrix *_predicted, FloatMatrix *_actual) {
+    float lossValue = 0;
+
+    for (int index = 0; index < _predicted->cols * _predicted->rows; index++) {
+        lossValue += pow(_predicted->values[index] - _actual->values[index], 2);
+    }
+
+    lossValue = lossValue / (_predicted->cols * _predicted->rows);
+
+    return lossValue;
 }
