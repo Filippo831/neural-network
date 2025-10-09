@@ -1,4 +1,7 @@
 #pragma once
+#include "./math_functions.h"
+#include <stdlib.h>
+#include <time.h>
 
 /*
  *   @params
@@ -11,8 +14,8 @@
 typedef struct Layer {
     int inputs;
     int nodes;
-    float *biases;
-    float *weights;
+    FloatMatrix *biases;
+    FloatMatrix *weights;
 } Layer;
 
 /*
@@ -23,3 +26,14 @@ typedef struct Layer {
  */
 
 Layer *initLayer(int _inputs, int _nodes);
+
+/*
+ * function that initialize the weights with a value
+ * that ranges from -2 to 2
+ */
+void initWeights(FloatMatrix *_input);
+
+/*
+ * init biases to 0
+ */
+void initBiases(FloatMatrix *_input);
