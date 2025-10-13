@@ -3,6 +3,11 @@
 #include <stdlib.h>
 #include <time.h>
 
+typedef enum ActivationFunctionTypes {
+    STANDART,
+    CONVOLUTIONAL
+} ActivationFunctionTypes;
+
 /*
  *   @params
  *   inputs: how many nodes are in the previous layer
@@ -10,12 +15,17 @@
  *   biases: store the value of the biases for each node
  *   weights: store the value fo the weights for each connection coming from the
  * previous layer
+ *
+ *   activationFunction: attach the function that will be used to process input data
  */
 typedef struct Layer {
     int inputs;
     int nodes;
+
     FloatMatrix *biases;
     FloatMatrix *weights;
+
+    int (*activationFunction)(FloatMatrix *, FloatMatrix *, FloatMatrix *);
 } Layer;
 
 /*
