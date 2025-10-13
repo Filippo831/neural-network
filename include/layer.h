@@ -3,10 +3,10 @@
 #include <stdlib.h>
 #include <time.h>
 
-typedef enum ActivationFunctionTypes {
+typedef enum LayerType {
     STANDART,
     CONVOLUTIONAL
-} ActivationFunctionTypes;
+} LayerType;
 
 /*
  *   @params
@@ -25,7 +25,7 @@ typedef struct Layer {
     FloatMatrix *biases;
     FloatMatrix *weights;
 
-    int (*activationFunction)(FloatMatrix *, FloatMatrix *, FloatMatrix *);
+    LayerFunctionErrors (*layerFunction)(FloatMatrix *, FloatMatrix *, FloatMatrix *);
 } Layer;
 
 /*
@@ -35,7 +35,7 @@ typedef struct Layer {
  *
  */
 
-Layer *initLayer(int _inputs, int _nodes);
+Layer *initLayer(int _inputs, int _nodes, LayerType _type);
 
 /*
  * function that initialize the weights with a value

@@ -33,12 +33,12 @@ float sigmoid(float _input);
  *   correct: return enum with error specific to this calculation
  */
 
-typedef enum DotProductFloatErrors {
+typedef enum LayerFunctionErrors {
     NO_ERROR,
     WRONG_SIZES,
-} DotProductFloatErrors;
+} LayerFunctionErrors;
 
-DotProductFloatErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
+LayerFunctionErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
                                       FloatMatrix *_result);
 
 /*

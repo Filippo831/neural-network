@@ -1,7 +1,6 @@
 #include "../include/math_functions.h"
 #include <CUnit/Basic.h>
 #include <CUnit/CUnit.h>
-#include <stdio.h>
 
 void test_dot_product_correct(void) {
         // ------------------- Setup Matrix A (2x2) -------------------

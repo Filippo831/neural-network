@@ -1,4 +1,5 @@
 #include "../include/layer.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 void initWeights(FloatMatrix *_input) {
@@ -15,7 +16,7 @@ void initBiases(FloatMatrix *_input) {
     }
 }
 
-Layer *initLayer(int _inputs, int _nodes) {
+Layer *initLayer(int _inputs, int _nodes, LayerType _type) {
     Layer *netLayer;
 
     netLayer->inputs = _inputs;
@@ -33,5 +34,12 @@ Layer *initLayer(int _inputs, int _nodes) {
     weightsMatrix.rows = _nodes;
     netLayer->weights = &weightsMatrix;
 
+    switch (_type) {
+    case STANDART:
+        netLayer->layerFunction = dotProductFloat;
+    case CONVOLUTIONAL:
+        // TODO: change this when convolutional function is implemented
+        printf("convolutional not implemented yet");
+    }
     return netLayer;
 }

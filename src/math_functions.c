@@ -18,8 +18,8 @@ float getIndexMatrix(int _row, int _cols, FloatMatrix *_matrix) {
     return _matrix->values[_row * _matrix->cols + _cols];
 };
 
-DotProductFloatErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
-                                      FloatMatrix *_result) {
+LayerFunctionErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
+                                    FloatMatrix *_result) {
 
     if (_left->cols != _right->rows) {
         return WRONG_SIZES;
