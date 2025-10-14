@@ -8,9 +8,10 @@
  * defined at creation, not dynamic layers: pointer to a layers array that will
  * contain all the layers
  *
- * currentLayersNumber: amount of layers added to the neural network. Used to keep track at what intex to add the new inserted layers
- *   input: pointer to a matrix that will include all the input values
- *   output: pointer to a matrix that will include all the output values
+ * currentLayersNumber: amount of layers added to the neural network. Used to
+ * keep track at what intex to add the new inserted layers input: pointer to a
+ * matrix that will include all the input values output: pointer to a matrix
+ * that will include all the output values
  *
  */
 
@@ -20,8 +21,11 @@ typedef struct NeuralNetwork {
 
     int currentLayersNumber;
 
+    // NOTE: for now these 2 values are not used because the feedForward
+    // function uses a param as input and return as output
     FloatMatrix *input;
     FloatMatrix *output;
+
 } NeuralNetwork;
 
 /*
@@ -37,3 +41,18 @@ typedef struct NeuralNetwork {
  * this function
  */
 void addLayer(NeuralNetwork *_network, Layer *_layer);
+
+/*
+ * @params
+ * _input: matrix containing input data
+ * _network: network that will process that data
+ *
+ * @output
+ * Matrix containing the result matrix
+ *
+ * @body
+ * this function will pass every sigle layer of the neural network making the
+ * calculation and passing the result to the next layer
+ *
+ */
+FloatMatrix *feedForward(FloatMatrix *_input, NeuralNetwork *_network);

@@ -19,7 +19,17 @@ typedef struct FloatMatrix {
  */
 float getIndexMatrix(int _row, int _cols, FloatMatrix *_matrix);
 
-float sigmoid(float _input);
+
+/*
+ * @param
+ * _input: input matrix where to calculate all the sigmoid output
+ *
+ *   flatten the value to a range from -1 to 1, changes the input pointer, does not copy the value to a new matrix
+ *
+ */
+
+void sigmoid(FloatMatrix *_input);
+
 
 /*
  *   @params

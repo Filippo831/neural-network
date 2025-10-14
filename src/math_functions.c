@@ -2,16 +2,10 @@
 #include <math.h>
 #include <stdio.h>
 
-/*
- * @param
- * _input: x value of the function
- *
- *   flatten the value to a range from -1 to 1
- *
- */
-float sigmoid(float _input) {
-    float result = 1 / (1 + exp(_input));
-    return result;
+void sigmoid(FloatMatrix *_input) {
+    for (int index = 0; index < _input->cols * _input->rows; index++) {
+        _input->values[index] = 1 / (1 + exp(_input->values[index]));
+    }
 }
 
 float getIndexMatrix(int _row, int _cols, FloatMatrix *_matrix) {
