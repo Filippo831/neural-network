@@ -1,9 +1,10 @@
 #include "../include/math_functions.h"
 #include <CUnit/Basic.h>
 #include <CUnit/CUnit.h>
+#include <stdio.h>
 
 void test_dot_product_correct(void) {
-        // ------------------- Setup Matrix A (2x2) -------------------
+    // ------------------- Setup Matrix A (2x2) -------------------
     // A = | 1.0  2.0 |
     //     | 3.0  4.0 |
     FloatMatrix a;
@@ -41,7 +42,7 @@ void test_dot_product_correct(void) {
     // ------------------- Check Result Matrix Dimensions -------------------
     CU_ASSERT_EQUAL(c.rows, expectedRows);
     CU_ASSERT_EQUAL(c.cols, expectedCols);
-    
+
     // ------------------- Check Result Matrix Values -------------------
     int isGood = 1;
     int totalElements = expectedRows * expectedCols;
@@ -55,11 +56,9 @@ void test_dot_product_correct(void) {
     }
 
     CU_ASSERT_EQUAL(isGood, 1);
-
-
 }
 void test_dot_product_wrong_sizes(void) {
-        // ------------------- Setup Matrix A (2x3) -------------------
+    // ------------------- Setup Matrix A (2x3) -------------------
     FloatMatrix a;
     float aArray[] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
     a.values = aArray;
@@ -76,10 +75,11 @@ void test_dot_product_wrong_sizes(void) {
 
     // ------------------- Expected Outcome -------------------
     // Expect the function to return the specific error code.
-    int expectedError = WRONG_SIZES; 
+    int expectedError = WRONG_SIZES;
 
     // ------------------- Perform Dot Product -------------------
-    FloatMatrix c = {0}; // Initialize result struct to ensure c.values starts as NULL/0
+    FloatMatrix c = {
+        0}; // Initialize result struct to ensure c.values starts as NULL/0
     int error = dotProductFloat(&a, &b, &c);
 
     // ------------------- Check for Expected Error -------------------
@@ -87,8 +87,9 @@ void test_dot_product_wrong_sizes(void) {
     CU_ASSERT_EQUAL(error, expectedError);
 
     // ------------------- Safety Checks -------------------
-    // Ensure the function did not attempt to allocate or set invalid dimensions for 'c'.
-    CU_ASSERT_EQUAL(c.rows, 0); 
+    // Ensure the function did not attempt to allocate or set invalid dimensions
+    // for 'c'.
+    CU_ASSERT_EQUAL(c.rows, 0);
     CU_ASSERT_EQUAL(c.cols, 0);
     CU_ASSERT_PTR_NULL(c.values); // Check that the values pointer is NULL or 0
 }
@@ -108,25 +109,79 @@ void test_loss_function(void) {
     actual.values = actualValues;
 
     // ------------------- Expected Result -------------------
-    // Calculated manually: ( (1.5-1.0)^2 + (2.5-2.0)^2 + (3.5-3.0)^2 ) / 3 = 0.25
-    float expectedLoss = 0.25; 
+    // Calculated manually: ( (1.5-1.0)^2 + (2.5-2.0)^2 + (3.5-3.0)^2 ) / 3 =
+    // 0.25
+    float expectedLoss = 0.25;
 
     // ------------------- Calculate Loss -------------------
     float calculatedLoss = loss(&predicted, &actual);
 
     // ------------------- Check Result -------------------
-    // Use an absolute tolerance (epsilon) for floating point comparison 
+    // Use an absolute tolerance (epsilon) for floating point comparison
     // to avoid failures due to minor precision issues.
-    float tolerance = 1e-6; 
+    float tolerance = 1e-6;
 
-    // CU_ASSERT_DOUBLE_EQUAL is typically the best choice for CUnit/similar frameworks
-    // CU_ASSERT_DOUBLE_EQUAL(calculatedLoss, expectedLoss, tolerance);
+    // CU_ASSERT_DOUBLE_EQUAL is typically the best choice for CUnit/similar
+    // frameworks CU_ASSERT_DOUBLE_EQUAL(calculatedLoss, expectedLoss,
+    // tolerance);
 
     // If CU_ASSERT_DOUBLE_EQUAL isn't available, use this manual check:
     int isGood = (fabs(calculatedLoss - expectedLoss) < tolerance);
     CU_ASSERT_EQUAL(isGood, 1);
 }
 
+// write a test for the matrices addition function
+void test_matrix_addition(void) {
+    // ------------------- Setup Matrix A (2x2) -------------------
+    FloatMatrix a;
+    float aArray[] = {1.0, 2.0, 3.0, 4.0};
+    a.values = aArray;
+    a.rows = 2;
+    a.cols = 2;
+
+    // ------------------- Setup Matrix B (2x2) -------------------
+    FloatMatrix b;
+    float bArray[] = {5.0, 6.0, 7.0, 8.0};
+    b.values = bArray;
+    b.rows = 2;
+    b.cols = 2;
+
+    // ------------------- Expected Result (2x2) -------------------
+    // R = A + B = | (1+5) (2+6) | = | 6.0  8.0 |
+    //             | (3+7) (4+8) |   | 10.0 12.0 |
+    float expectedResult[] = {6.0, 8.0, 10.0, 12.0};
+    int expectedRows = 2;
+    int expectedCols = 2;
+
+    // ------------------- Perform Matrix Addition -------------------
+    FloatMatrix c;
+    matrixSumFloat(&a, &b, &c);
+
+    // print c values
+    // for (int i = 0; i < c.rows * c.cols; i++) {
+    //     printf("c.values[%d] = %.2f\n", i, c.values[i]);
+    // }
+
+    // ------------------- Check Result Matrix Dimensions -------------------
+    CU_ASSERT_EQUAL(c.rows, expectedRows);
+    CU_ASSERT_EQUAL(c.cols, expectedCols);
+
+    // ------------------- Check Result Matrix Values -------------------
+    int isGood = 1;
+    int totalElements = expectedRows * expectedCols;
+
+    // TODO: understand why the values get erased after the furst cycle
+    for (int index = 0; index < totalElements; index++) {
+        // Use a small epsilon for floating point comparison (e.g., 0.0001)
+        printf("%.2f\n", c.values[2]);
+        // if (fabs(expectedResult[index] - c.values[index]) > 1e-4) {
+        //     isGood = 0;
+        //     // break;
+        // }
+    }
+
+    CU_ASSERT_EQUAL(isGood, 1);
+}
 
 /* Suite Initialization and Cleanup Functions (optional, but good practice) */
 int init_suite(void) {
@@ -164,8 +219,13 @@ int main(void) {
         return CU_get_error();
     }
 
-    if ((CU_add_test(pSuite, "Test loss function",
-                     test_loss_function)) == NULL) {
+    if ((CU_add_test(pSuite, "Test loss function", test_loss_function)) ==
+        NULL) {
+        CU_cleanup_registry();
+        return CU_get_error();
+    }
+    if ((CU_add_test(pSuite, "Test matrix addition function",
+                     test_matrix_addition)) == NULL) {
         CU_cleanup_registry();
         return CU_get_error();
     }

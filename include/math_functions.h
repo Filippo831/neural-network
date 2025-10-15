@@ -19,17 +19,16 @@ typedef struct FloatMatrix {
  */
 float getIndexMatrix(int _row, int _cols, FloatMatrix *_matrix);
 
-
 /*
  * @param
  * _input: input matrix where to calculate all the sigmoid output
  *
- *   flatten the value to a range from -1 to 1, changes the input pointer, does not copy the value to a new matrix
+ *   flatten the value to a range from -1 to 1, changes the input pointer, does
+ * not copy the value to a new matrix
  *
  */
 
 void sigmoid(FloatMatrix *_input);
-
 
 /*
  *   @params
@@ -43,13 +42,15 @@ void sigmoid(FloatMatrix *_input);
  *   correct: return enum with error specific to this calculation
  */
 
+// TODO: change this to general matrices computation errors so you can use the
+// same for the matrices addition
 typedef enum LayerFunctionErrors {
     NO_ERROR,
     WRONG_SIZES,
 } LayerFunctionErrors;
 
 LayerFunctionErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
-                                      FloatMatrix *_result);
+                                    FloatMatrix *_result);
 
 /*
  *  @param
@@ -64,3 +65,17 @@ LayerFunctionErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
  */
 
 float loss(FloatMatrix *_predicted, FloatMatrix *_actual);
+
+/*
+ *
+ *   @param
+ *   _left: left operand matrix
+ *   _right: right operand matrix
+ *   _result: result matrix
+ *
+ *   @body
+ *   compute the sum of 2 matrices
+ */
+
+void matrixSumFloat(FloatMatrix *_left, FloatMatrix *_right,
+                    FloatMatrix *_result);
