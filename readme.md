@@ -28,3 +28,10 @@ trying to build a neural network using c from scratch
 
 ## Activation functions implemented
 - sigmoid
+
+
+
+
+### note
+I made the math functions wrong so attaching an array created inside the function to the array inside the struct of the Matrix, i have to do something to make sure that this lives for longer like allocating it in the heap and free it only when needed otherwise it ruins everything. This bug is present both in the multiplication function and in the sum function.
+

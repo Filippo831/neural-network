@@ -155,12 +155,7 @@ void test_matrix_addition(void) {
 
     // ------------------- Perform Matrix Addition -------------------
     FloatMatrix c;
-    matrixSumFloat(&a, &b, &c);
-
-    // print c values
-    // for (int i = 0; i < c.rows * c.cols; i++) {
-    //     printf("c.values[%d] = %.2f\n", i, c.values[i]);
-    // }
+    matrixAdditionFloat(&a, &b, &c);
 
     // ------------------- Check Result Matrix Dimensions -------------------
     CU_ASSERT_EQUAL(c.rows, expectedRows);
@@ -169,11 +164,17 @@ void test_matrix_addition(void) {
     // ------------------- Check Result Matrix Values -------------------
     int isGood = 1;
     int totalElements = expectedRows * expectedCols;
+    for (int index = 2; index < totalElements; index++) {
+        printf("%d, %f, %d\n", index, c.values[index], &c.values[index]);
+    }
+    for (int index = 1; index < totalElements; index++) {
+        printf("%d, %f, %d\n", index, c.values[index], &c.values[index]);
+    }
 
     // TODO: understand why the values get erased after the furst cycle
     for (int index = 0; index < totalElements; index++) {
         // Use a small epsilon for floating point comparison (e.g., 0.0001)
-        printf("%.2f\n", c.values[2]);
+        // printf("%.2f\n", c.values[index]);
         // if (fabs(expectedResult[index] - c.values[index]) > 1e-4) {
         //     isGood = 0;
         //     // break;

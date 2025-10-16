@@ -77,5 +77,5 @@ float loss(FloatMatrix *_predicted, FloatMatrix *_actual);
  *   compute the sum of 2 matrices
  */
 
-void matrixSumFloat(FloatMatrix *_left, FloatMatrix *_right,
+void matrixAdditionFloat(FloatMatrix *_left, FloatMatrix *_right,
                     FloatMatrix *_result);

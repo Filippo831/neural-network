@@ -55,7 +55,7 @@ float loss(FloatMatrix *_predicted, FloatMatrix *_actual) {
     return lossValue;
 }
 
-void matrixSumFloat(FloatMatrix *_left, FloatMatrix *_right,
+void matrixAdditionFloat(FloatMatrix *_left, FloatMatrix *_right,
                     FloatMatrix *_result) {
 
     _result->cols = _left->cols;
@@ -63,11 +63,14 @@ void matrixSumFloat(FloatMatrix *_left, FloatMatrix *_right,
 
     float resultMatrix[_result->rows * _result->cols];
 
+    int matrixIndex = 0;
+
     for (int index = 0; index < _result->rows * _result->cols; index++) {
-        resultMatrix[index] = _left->values[index] + _right->values[index];
+        resultMatrix[matrixIndex++] = _left->values[index] + _right->values[index];
         printf("%.2f + %.2f = %.2f\n", _left->values[index] , _right->values[index], resultMatrix[index]);
     }
 
-    // fflush(stdin);
+    fflush(stdin);
+
     _result->values = resultMatrix;
 }
