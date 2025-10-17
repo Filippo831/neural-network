@@ -22,7 +22,9 @@ LayerFunctionErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
     _result->rows = _left->rows;
     _result->cols = _right->cols;
 
-    float resultMatrix[_result->rows * _result->cols];
+    float *resultMatrix =
+        malloc(sizeof(float) * (_result->rows * _result->cols));
+    // float resultMatrix[_result->rows * _result->cols];
     int matrixIndex = 0;
 
     for (int r = 0; r < _left->rows; r++) {
@@ -56,18 +58,22 @@ float loss(FloatMatrix *_predicted, FloatMatrix *_actual) {
 }
 
 void matrixAdditionFloat(FloatMatrix *_left, FloatMatrix *_right,
-                    FloatMatrix *_result) {
+                         FloatMatrix *_result) {
 
     _result->cols = _left->cols;
     _result->rows = _left->rows;
 
-    float resultMatrix[_result->rows * _result->cols];
+    // float resultMatrix[_result->rows * _result->cols];
+    float *resultMatrix =
+        malloc(sizeof(float) * (_result->rows * _result->cols));
 
     int matrixIndex = 0;
 
     for (int index = 0; index < _result->rows * _result->cols; index++) {
-        resultMatrix[matrixIndex++] = _left->values[index] + _right->values[index];
-        printf("%.2f + %.2f = %.2f\n", _left->values[index] , _right->values[index], resultMatrix[index]);
+        resultMatrix[matrixIndex++] =
+            _left->values[index] + _right->values[index];
+        printf("%.2f + %.2f = %.2f\n", _left->values[index],
+               _right->values[index], resultMatrix[index]);
     }
 
     fflush(stdin);
