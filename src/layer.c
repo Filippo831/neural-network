@@ -17,7 +17,7 @@ void initBiases(FloatMatrix *_input) {
 }
 
 Layer *initLayer(int _inputs, int _nodes, LayerType _type) {
-    Layer *netLayer;
+    Layer *netLayer = malloc(sizeof(Layer));
 
     netLayer->inputs = _inputs;
     netLayer->nodes = _nodes;

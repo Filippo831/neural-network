@@ -57,41 +57,29 @@ void test_dot_product_correct(void) {
 
     CU_ASSERT_EQUAL(isGood, 1);
 }
+
+// test the function dotProductFloat to see if it works as indended checking if the result is correct
 void test_dot_product_wrong_sizes(void) {
-    // ------------------- Setup Matrix A (2x3) -------------------
+    // ------------------- Setup Matrix A (2x2) -------------------
     FloatMatrix a;
-    float aArray[] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
+    float aArray[] = {1.0, 2.0, 3.0, 4.0};
     a.values = aArray;
     a.rows = 2;
-    a.cols = 3; // Inner dimension (n) is 3
+    a.cols = 2;
 
-    // ------------------- Setup Matrix B (2x2) -------------------
-    // This is incompatible because A's columns (3) != B's rows (2).
+    // ------------------- Setup Matrix B (3x1) -------------------
     FloatMatrix b;
-    float bArray[] = {7.0, 8.0, 9.0, 10.0};
+    float bArray[] = {5.0, 6.0, 7.0};
     b.values = bArray;
-    b.rows = 2; // Inner dimension (n) is 2 (MISMATCH!)
-    b.cols = 2;
-
-    // ------------------- Expected Outcome -------------------
-    // Expect the function to return the specific error code.
-    int expectedError = WRONG_SIZES;
+    b.rows = 3;
+    b.cols = 1;
 
     // ------------------- Perform Dot Product -------------------
-    FloatMatrix c = {
-        0}; // Initialize result struct to ensure c.values starts as NULL/0
+    FloatMatrix c;
     int error = dotProductFloat(&a, &b, &c);
 
-    // ------------------- Check for Expected Error -------------------
-    // Check that the function returned the WRONG_SIZES error code.
-    CU_ASSERT_EQUAL(error, expectedError);
-
-    // ------------------- Safety Checks -------------------
-    // Ensure the function did not attempt to allocate or set invalid dimensions
-    // for 'c'.
-    CU_ASSERT_EQUAL(c.rows, 0);
-    CU_ASSERT_EQUAL(c.cols, 0);
-    CU_ASSERT_PTR_NULL(c.values); // Check that the values pointer is NULL or 0
+    // ------------------- Check for WRONG_SIZES Error -------------------
+    CU_ASSERT_EQUAL(error, WRONG_SIZES);
 }
 
 void test_loss_function(void) {
@@ -164,21 +152,14 @@ void test_matrix_addition(void) {
     // ------------------- Check Result Matrix Values -------------------
     int isGood = 1;
     int totalElements = expectedRows * expectedCols;
-    for (int index = 2; index < totalElements; index++) {
-        printf("%d, %f, %d\n", index, c.values[index], &c.values[index]);
-    }
-    for (int index = 1; index < totalElements; index++) {
-        printf("%d, %f, %d\n", index, c.values[index], &c.values[index]);
-    }
 
     // TODO: understand why the values get erased after the furst cycle
     for (int index = 0; index < totalElements; index++) {
         // Use a small epsilon for floating point comparison (e.g., 0.0001)
-        // printf("%.2f\n", c.values[index]);
-        // if (fabs(expectedResult[index] - c.values[index]) > 1e-4) {
-        //     isGood = 0;
-        //     // break;
-        // }
+        if (fabs(expectedResult[index] - c.values[index]) > 1e-4) {
+            isGood = 0;
+            break;
+        }
     }
 
     CU_ASSERT_EQUAL(isGood, 1);

@@ -28,6 +28,22 @@ typedef struct NeuralNetwork {
 
 } NeuralNetwork;
 
+
+/*
+ *  @params
+ *  _totalLayersNumber: amount of layers to add to the neural network
+ *  _inputSize: size of input layer
+ *  _outputSize: size of output layer
+ *
+ *  @body
+ *  init the neural network and define the input and output sizes
+ *  
+ *  @return
+ *  return the pointer to the neural network created in the heap
+ *
+ */
+NeuralNetwork *createNeuralNetwork(int _totalLayersNumber, int _inputSize, int _outputSize);
+
 /*
  *  @params
  *  _network: the network where I want to add this layer
@@ -55,4 +71,4 @@ void addLayer(NeuralNetwork *_network, Layer *_layer);
  * calculation and passing the result to the next layer
  *
  */
-FloatMatrix *feedForward(FloatMatrix *_input, NeuralNetwork *_network);
+void feedForward(FloatMatrix *_input, NeuralNetwork *_network);

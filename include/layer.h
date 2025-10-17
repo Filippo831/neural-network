@@ -3,10 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-typedef enum LayerType {
-    STANDART,
-    CONVOLUTIONAL
-} LayerType;
+typedef enum LayerType { STANDART, CONVOLUTIONAL } LayerType;
 
 /*
  *   @params
@@ -16,7 +13,8 @@ typedef enum LayerType {
  *   weights: store the value fo the weights for each connection coming from the
  * previous layer
  *
- *   activationFunction: attach the function that will be used to process input data
+ *   activationFunction: attach the function that will be used to process input
+ * data
  */
 typedef struct Layer {
     int inputs;
@@ -26,13 +24,22 @@ typedef struct Layer {
     FloatMatrix *weights;
 
     // FloatMatrix *_leftMatrix, FloatMatrix *_rightMatrix, FloatMatrix *_output
-    LayerFunctionErrors (*layerFunction)(FloatMatrix *, FloatMatrix *, FloatMatrix *);
+    LayerFunctionErrors (*layerFunction)(FloatMatrix *, FloatMatrix *,
+                                         FloatMatrix *);
 } Layer;
 
 /*
  *   @params
  *   _inputs: define the number of layer in the previous layer
  *   _nodes: define the amount of nodes in this layer
+ *   _type: define the type of layer
+ *
+ *  @body
+ *  create the weights and biases matrix and fill with random data. It also
+ * assigns the function depending on the type of layer
+ *
+ *  @return
+ *  return the layer pointer
  *
  */
 
