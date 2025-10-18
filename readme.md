@@ -7,7 +7,8 @@ trying to build a neural network using c from scratch
 - [x] insert type of layer into the layer type, figure out what return type to use. Probably it's a good idea to make error struct common between all activation functions to avoid issues
 - [ ] make the forward propagation function
     - [x] weights calculation
-    - [ ] add biases calculation
+    - [x] add biases calculation
+    - [ ] fix all the functions
 - [ ] make the backpropagation function
     - [ ] adjust the weights values
     - [ ] adjust the biases values
@@ -33,5 +34,5 @@ trying to build a neural network using c from scratch
 
 
 ### note
-I made the math functions wrong so attaching an array created inside the function to the array inside the struct of the Matrix, i have to do something to make sure that this lives for longer like allocating it in the heap and free it only when needed otherwise it ruins everything. This bug is present both in the multiplication function and in the sum function.
+You have to fix all the function to make them more reliable with all the allocations, now they all are a mess
 

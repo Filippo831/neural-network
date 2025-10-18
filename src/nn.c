@@ -29,12 +29,26 @@ void addLayer(NeuralNetwork *_network, Layer *_layer) {
 }
 
 void feedForward(FloatMatrix *_input, NeuralNetwork *_network) {
-    FloatMatrix *result;
-    result = _input;
+
+    FloatMatrix *result = malloc(sizeof(FloatMatrix));
+
+    result->values =
+        (float *)malloc(sizeof(float) * (_input->cols * _input->rows));
+    result->cols = _input->cols;
+    result->rows = _input->rows;
+
+    if (_input->values != result->values) {
+        for (int index = 0; index < _input->cols * _input->rows; index++) {
+            result->values[index] = _input->values[index];
+        }
+    }
+
     sigmoid(result);
+
 
     // NOTE: using currentLayersNumber instead of totalLayersNumber because
     // probably it's safer but see if there is a better implementation of this.
+
     for (int index = 0; index < _network->currentLayersNumber; index++) {
         LayerFunctionErrors error = _network->layers[index].layerFunction(
             _network->layers[index].weights, result, result);
@@ -43,6 +57,8 @@ void feedForward(FloatMatrix *_input, NeuralNetwork *_network) {
         if (error != 0) {
             printf("error in the feed forwand computation");
         }
+
+        
 
         matrixAdditionFloat(result, _network->layers[index].biases, result);
 

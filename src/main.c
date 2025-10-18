@@ -19,11 +19,11 @@ int main(int argc, char **argv) {
     float inputValues[] = {10, 3, 8, 6, 7, 9, 7, 8, 9, 9};
     input.values = inputValues;
 
-    // feedForward(&input, nn);
+    feedForward(&input, nn);
 
-    // for (int index = 0; index < 10; index++) {
-    //     printf("%f, ", nn->output->values[index]);
-    // }
+    for (int index = 0; index < 10; index++) {
+        printf("%f, ", nn->output->values[index]);
+    }
 
     free(layer1);
     free(layer2);
