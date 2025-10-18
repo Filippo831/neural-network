@@ -8,7 +8,6 @@
 # - bin/       : Final executables
 # - lib/       : Placeholder for external libraries (optional)
 
-# --- 1. Configuration Variables ---
 
 # Project Name (used for the final executable name)
 PROJECT_NAME := my_c_project
@@ -37,7 +36,6 @@ INCLUDES := -I$(INCLDIR)
 # Standard Linker flags (e.g., -lm for math)
 LDFLAGS := -lm
 
-# --- 2. Source and Object Lists ---
 
 # Find all source files in the source directory
 SRC_FILES := $(wildcard $(SRCDIR)/*.c)
@@ -64,7 +62,6 @@ TEST_OBJ_FILES := $(patsubst $(TESTDIR)/%.c, $(BUILDDIR)/%.test.o, $(TEST_SRC_FI
 MAIN_EXECUTABLE := $(BINDIR)/$(PROJECT_NAME)
 TEST_RUNNER := $(BINDIR)/$(PROJECT_NAME)_test
 
-# --- 3. Targets ---
 
 .PHONY: all main tests clean rebuild dirs debug
 
@@ -75,9 +72,11 @@ all: main
 $(BUILDDIR) $(BINDIR):
 	@mkdir -p $@
 
-# --- 4. Main Application Build ---
 
 main: $(MAIN_EXECUTABLE)
+
+run: ${MAIN_EXECUTABLE}
+	@./$(MAIN_EXECUTABLE)
 
 $(MAIN_EXECUTABLE): $(OBJ_FILES) | $(BINDIR)
 	@echo "=================================================="
@@ -89,7 +88,8 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.c | $(BUILDDIR)
 	@echo "Compiling main: $< -> $@"
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-# --- 5. Testing Build and Run ---
+
+
 
 # Test runner target: builds and runs the tests
 tests: $(TEST_RUNNER)

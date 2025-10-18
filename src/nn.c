@@ -1,18 +1,25 @@
 #include "../include/nn.h"
 #include <stdlib.h>
 
-NeuralNetwork *createNeuralNetwork(int _totalLayersNumber, int _inputSize, int _outputSize) {
+NeuralNetwork *createNeuralNetwork(int _totalLayersNumber, int _inputSize,
+                                   int _outputSize) {
     NeuralNetwork *nn = malloc(sizeof(NeuralNetwork));
 
     nn->totalLayersNumber = _totalLayersNumber;
 
+    nn->layers = malloc(sizeof(Layer) * _totalLayersNumber);
+
+    nn->input = malloc(sizeof(FloatMatrix));
+
     nn->input->cols = _inputSize;
     nn->input->rows = 1;
-    nn->input->values = malloc(sizeof(float) * _inputSize);
-    
+    float *inputArray = (float *)malloc(sizeof(float) * _inputSize);
+    nn->input->values = inputArray;
+
+    nn->output = malloc(sizeof(NeuralNetwork));
     nn->output->cols = _outputSize;
     nn->output->rows = 1;
-    nn->output->values = malloc(sizeof(float) * _outputSize);
+    nn->output->values = (float *)malloc(sizeof(float) * _outputSize);
 
     return nn;
 }
