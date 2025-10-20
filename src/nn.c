@@ -50,18 +50,26 @@ void feedForward(FloatMatrix *_input, NeuralNetwork *_network) {
     // probably it's safer but see if there is a better implementation of this.
 
     for (int index = 0; index < _network->currentLayersNumber; index++) {
+        FloatMatrix *temp;
         LayerFunctionErrors error = _network->layers[index].layerFunction(
-            _network->layers[index].weights, result, result);
+            _network->layers[index].weights, result, temp);
 
-        // TODO: fix with something nicer
-        if (error != 0) {
-            printf("error in the feed forwand computation");
-        }
+        free(result->values);
+        // free(result);
+        //     
+        result = temp;
+        //
+        // // TODO: fix with something nicer
+        // if (error != 0) {
+        //     printf("error in the feed forwand computation");
+        // }
 
-        
+        // matrixAdditionFloat(result, _network->layers[index].biases, temp);
 
-        matrixAdditionFloat(result, _network->layers[index].biases, result);
-
+        // free(result->values);
+        // free(result);
+        //     
+        // result = temp;
         sigmoid(result);
     }
 
