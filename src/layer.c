@@ -23,16 +23,16 @@ Layer *initLayer(int _inputs, int _nodes, LayerType _type) {
     netLayer->nodes = _nodes;
 
     // create a 1d matrix to store the biases, 1 for each node
-    FloatMatrix biasesMatrix;
-    biasesMatrix.cols = 1;
-    biasesMatrix.rows = _nodes;
-    netLayer->biases = &biasesMatrix;
+    FloatMatrix *biasesMatrix = malloc(sizeof(FloatMatrix));
+    biasesMatrix->cols = 1;
+    biasesMatrix->rows = _nodes;
+    netLayer->biases = biasesMatrix;
 
     // create a 2d matrix to store the weights, # inputs number for each node
-    FloatMatrix weightsMatrix;
-    weightsMatrix.cols = 1;
-    weightsMatrix.rows = _nodes;
-    netLayer->weights = &weightsMatrix;
+    FloatMatrix *weightsMatrix = malloc(sizeof(FloatMatrix));
+    weightsMatrix->cols = _inputs;
+    weightsMatrix->rows = _nodes;
+    netLayer->weights = weightsMatrix;
 
     switch (_type) {
     case STANDART:

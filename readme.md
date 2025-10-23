@@ -35,4 +35,5 @@ trying to build a neural network using c from scratch
 
 ### note
 You have to fix all the function to make them more reliable with all the allocations, now they all are a mess
+Probably defining the malloc in a function and then calling the free function in another scope breaks everything so you have to find a way to do both in the same scope
 

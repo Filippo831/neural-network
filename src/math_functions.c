@@ -19,7 +19,7 @@ LayerFunctionErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
         return WRONG_SIZES;
     }
 
-    float *resultMatrix = malloc(sizeof(float) * (_left->rows * _right->cols));
+    float resultMatrix[_left->rows * _right->cols];
 
     int matrixIndex = 0;
 
@@ -59,20 +59,13 @@ float loss(FloatMatrix *_predicted, FloatMatrix *_actual) {
 void matrixAdditionFloat(FloatMatrix *_left, FloatMatrix *_right,
                          FloatMatrix *_result) {
 
-    // _result->cols = _left->cols;
-    // _result->rows = _left->rows;
+    _result->cols = _left->cols;
+    _result->rows = _left->rows;
 
-    // float *resultMatrix = malloc(sizeof(float) * (_left->rows * _left->cols));
-    //
-    // for (int index = 0; index < _left->rows * _left->cols; index++) {
-    //     resultMatrix[index] = _left->values[index] + _right->values[index];
-    // }
-    //
-    // _result->values = malloc(sizeof(float) * (_result->rows * _result->cols));
-    //
-    // for (int index = 0; index < _result->rows * _result->cols; index++) {
-    //     _result->values[index] = resultMatrix[index];
-    //     printf("%f, ", _result->values[index]);
-    // }
-    // free(resultMatrix);
+    _result->values = malloc(sizeof(float) * (_result->rows * _result->cols));
+
+    // sum element by element
+    for (int index = 0; index < _left->rows * _left->cols; index++) {
+        _result->values[index] = _left->values[index] + _right->values[index];
+    }
 }

@@ -58,7 +58,48 @@ void test_dot_product_correct(void) {
     CU_ASSERT_EQUAL(isGood, 1);
 }
 
-// test the function dotProductFloat to see if it works as indended checking if the result is correct
+// create another test for the dot product with different sizes but still
+// correct
+void test_dot_product_correct_2(void) {
+    FloatMatrix a;
+    float aArray[] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
+    a.values = aArray;
+    a.rows = 2;
+    a.cols = 3;
+
+    FloatMatrix b;
+    float bArray[] = {7.0, 8.0, 9.0, 10.0, 11.0, 12.0};
+    b.values = bArray;
+    b.rows = 3;
+    b.cols = 2;
+
+    FloatMatrix c;
+
+    int error = dotProductFloat(&a, &b, &c);
+
+    CU_ASSERT_EQUAL(error, NO_ERROR);
+
+    float expectedResult[] = {58.0, 64.0, 139.0, 154.0};
+    int expectedRows = 2;
+    int expectedCols = 2;
+
+    CU_ASSERT_EQUAL(c.rows, expectedRows);
+    CU_ASSERT_EQUAL(c.cols, expectedCols);
+
+    int isGood = 1;
+    int totalElements = expectedRows * expectedCols;
+    for (int index = 0; index < totalElements; index++) {
+        if (fabs(expectedResult[index] - c.values[index]) > 1e-4) {
+            isGood = 0;
+            break;
+        }
+    }
+
+    CU_ASSERT_EQUAL(isGood, 1);
+}
+
+// test the function dotProductFloat to see if it works as indended checking if
+// the result is correct
 void test_dot_product_wrong_sizes(void) {
     // ------------------- Setup Matrix A (2x2) -------------------
     FloatMatrix a;
@@ -191,6 +232,11 @@ int main(void) {
 
     if ((CU_add_test(pSuite, "Test Dot Product Calculation correct case",
                      test_dot_product_correct)) == NULL) {
+        CU_cleanup_registry();
+        return CU_get_error();
+    }
+    if ((CU_add_test(pSuite, "Test Dot Product Calculation correct case #2",
+                     test_dot_product_correct_2)) == NULL) {
         CU_cleanup_registry();
         return CU_get_error();
     }

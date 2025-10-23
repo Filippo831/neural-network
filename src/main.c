@@ -4,7 +4,6 @@
 #include <stdio.h>
 
 int main(int argc, char **argv) {
-    // printf("start\n");
     NeuralNetwork *nn = createNeuralNetwork(2, 10, 10);
 
     Layer *layer1 = initLayer(10, 10, STANDART);
@@ -25,7 +24,11 @@ int main(int argc, char **argv) {
         printf("%f, ", nn->output->values[index]);
     }
 
+    free(layer1->biases);
+    free(layer1->weights);
     free(layer1);
+    free(layer2->biases);
+    free(layer2->weights);
     free(layer2);
     free(nn);
     return 0;
