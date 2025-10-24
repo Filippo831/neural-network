@@ -1,4 +1,5 @@
 #include "../include/nn.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 NeuralNetwork *createNeuralNetwork(int _totalLayersNumber, int _inputSize,
@@ -38,10 +39,8 @@ void feedForward(FloatMatrix *_input, NeuralNetwork *_network) {
     input->cols = _input->cols;
     input->rows = _input->rows;
 
-    if (_input->values != input->values) {
-        for (int index = 0; index < _input->cols * _input->rows; index++) {
-            input->values[index] = _input->values[index];
-        }
+    for (int index = 0; index < _input->cols * _input->rows; index++) {
+        input->values[index] = _input->values[index];
     }
 
     sigmoid(input);
@@ -51,12 +50,26 @@ void feedForward(FloatMatrix *_input, NeuralNetwork *_network) {
 
     FloatMatrix *toFree;
     for (int index = 0; index < _network->currentLayersNumber; index++) {
+        // printf("\n");
+        // for (int i = 0; i < input->rows * input->cols; i++) {
+        //     printf("%f ", input->values[i]);
+        // }
+        // printf("\n");
         FloatMatrix *temp = malloc(sizeof(FloatMatrix));
         LayerFunctionErrors error = _network->layers[index].layerFunction(
             _network->layers[index].weights, input, temp);
 
+
+        printf("\n");
+        for (int i = 0; i < temp->rows * temp->cols; i++) {
+            printf("%f ", temp->values[i]);
+        }
+        printf("\n");
+
+        printf("\n");
         toFree = input;
         input = temp;
+        free(toFree->values);
         free(toFree);
 
         // TODO: fix with something nicer
@@ -67,10 +80,12 @@ void feedForward(FloatMatrix *_input, NeuralNetwork *_network) {
         FloatMatrix *temp2 = malloc(sizeof(FloatMatrix));
         matrixAdditionFloat(input, _network->layers[index].biases, temp2);
 
-        FloatMatrix *toFree;
         toFree = input;
         input = temp2;
-        sigmoid(toFree);
+        sigmoid(input);
+
+        free(toFree->values);
+        free(toFree);
     }
 
     // copy to output element by element

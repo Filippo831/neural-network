@@ -63,7 +63,7 @@ MAIN_EXECUTABLE := $(BINDIR)/$(PROJECT_NAME)
 TEST_RUNNER := $(BINDIR)/$(PROJECT_NAME)_test
 
 
-.PHONY: all main tests clean rebuild dirs debug
+.PHONY: all main tests clean rebuild dirs debug sanitize run_san
 
 # Default target: builds the main executable
 all: main
@@ -121,3 +121,28 @@ debug:
 	@echo "Starting debug build..."
 	@make CFLAGS='$(STD_CFLAGS) -DDEBUG' clean all tests
 
+
+SAN_CFLAGS := $(STD_CFLAGS) -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer
+SAN_EXECUTABLE := $(BINDIR)/$(PROJECT_NAME)_san
+
+sanitize: $(SAN_EXECUTABLE)
+
+run_san: sanitize
+	@echo "=================================================="
+	@echo "Running sanitized executable: $@"
+	@./$(SAN_EXECUTABLE)
+
+# Rule to compile ALL source files into objects with SANITIZER flags
+# We use a pattern rule specific to the build directory for sanitized objects
+$(BUILDDIR)/%.san.o: $(SRCDIR)/%.c | $(BUILDDIR)
+	@echo "Compiling sanitized: $< -> $@"
+	$(CC) $(SAN_CFLAGS) $(INCLUDES) -c $< -o $@
+
+# Define all sanitized object file paths
+SAN_OBJ_FILES := $(patsubst $(SRCDIR)/%.c, $(BUILDDIR)/%.san.o, $(SRC_FILES))
+
+# Linking the sanitized main executable
+$(SAN_EXECUTABLE): $(SAN_OBJ_FILES) | $(BINDIR)
+	@echo "=================================================="
+	@echo "Linking sanitized executable: $@"
+	$(CC) $^ $(LDFLAGS) $(SAN_CFLAGS) -o $@

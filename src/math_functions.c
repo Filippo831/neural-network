@@ -1,6 +1,7 @@
 #include "../include/math_functions.h"
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 void sigmoid(FloatMatrix *_input) {
     for (int index = 0; index < _input->cols * _input->rows; index++) {
@@ -19,7 +20,7 @@ LayerFunctionErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
         return WRONG_SIZES;
     }
 
-    float resultMatrix[_left->rows * _right->cols];
+    float *resultMatrix = malloc(sizeof(float) * (_left->rows * _right->cols));
 
     int matrixIndex = 0;
 

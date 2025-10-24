@@ -5,12 +5,16 @@
 void initWeights(FloatMatrix *_input) {
     srand(time(NULL));
 
+    _input->values = malloc(sizeof(float) * (_input->cols * _input->rows));
     for (int index = 0; index < _input->cols * _input->rows; index++) {
         _input->values[index] = (float)(rand() % 40000) / 10000;
     }
 }
 
 void initBiases(FloatMatrix *_input) {
+    srand(time(NULL));
+
+    _input->values = malloc(sizeof(float) * (_input->cols * _input->rows));
     for (int index = 0; index < _input->cols * _input->rows; index++) {
         _input->values[index] = 0;
     }
@@ -27,6 +31,7 @@ Layer *initLayer(int _inputs, int _nodes, LayerType _type) {
     biasesMatrix->cols = 1;
     biasesMatrix->rows = _nodes;
     netLayer->biases = biasesMatrix;
+    initBiases(biasesMatrix);
 
     // create a 2d matrix to store the weights, # inputs number for each node
     FloatMatrix *weightsMatrix = malloc(sizeof(FloatMatrix));
@@ -39,7 +44,7 @@ Layer *initLayer(int _inputs, int _nodes, LayerType _type) {
         netLayer->layerFunction = dotProductFloat;
     case CONVOLUTIONAL:
         // TODO: change this when convolutional function is implemented
-        printf("convolutional not implemented yet");
+        // printf("convolutional not implemented yet");
     }
     return netLayer;
 }

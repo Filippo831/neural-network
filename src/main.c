@@ -13,8 +13,8 @@ int main(int argc, char **argv) {
     addLayer(nn, layer2);
 
     FloatMatrix input;
-    input.cols = 10;
-    input.rows = 1;
+    input.cols = 1;
+    input.rows = 10;
     float inputValues[] = {10, 3, 8, 6, 7, 9, 7, 8, 9, 9};
     input.values = inputValues;
 
