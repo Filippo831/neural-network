@@ -28,6 +28,7 @@ Layer *initLayer(int _inputs, int _nodes, LayerType _type) {
 
     // create a 1d matrix to store the biases, 1 for each node
     FloatMatrix *biasesMatrix = malloc(sizeof(FloatMatrix));
+    biasesMatrix->values = malloc(sizeof(float) * _nodes);
     biasesMatrix->cols = 1;
     biasesMatrix->rows = _nodes;
     netLayer->biases = biasesMatrix;
@@ -35,6 +36,7 @@ Layer *initLayer(int _inputs, int _nodes, LayerType _type) {
 
     // create a 2d matrix to store the weights, # inputs number for each node
     FloatMatrix *weightsMatrix = malloc(sizeof(FloatMatrix));
+    weightsMatrix->values = malloc(sizeof(float) * _inputs * _nodes);
     weightsMatrix->cols = _inputs;
     weightsMatrix->rows = _nodes;
     netLayer->weights = weightsMatrix;

@@ -9,8 +9,8 @@ void sigmoid(FloatMatrix *_input) {
     }
 }
 
-float getIndexMatrix(int _row, int _cols, FloatMatrix *_matrix) {
-    return _matrix->values[_row * _matrix->cols + _cols];
+float getIndexMatrix(int _row, int _col, FloatMatrix *_matrix) {
+    return _matrix->values[_row * _matrix->cols + _col];
 };
 
 LayerFunctionErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,

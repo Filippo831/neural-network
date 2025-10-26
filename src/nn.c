@@ -7,15 +7,15 @@ NeuralNetwork *createNeuralNetwork(int _totalLayersNumber, int _inputSize,
     NeuralNetwork *nn = malloc(sizeof(NeuralNetwork));
 
     nn->totalLayersNumber = _totalLayersNumber;
+    nn->currentLayersNumber = 0;
 
-    nn->layers = malloc(sizeof(Layer) * _totalLayersNumber);
+    nn->layers = (Layer *)malloc(sizeof(Layer) * _totalLayersNumber);
 
     nn->input = malloc(sizeof(FloatMatrix));
 
     nn->input->cols = _inputSize;
     nn->input->rows = 1;
-    float *inputArray = (float *)malloc(sizeof(float) * _inputSize);
-    nn->input->values = inputArray;
+    nn->input->values = (float *)malloc(sizeof(float) * _inputSize);
 
     nn->output = malloc(sizeof(NeuralNetwork));
     nn->output->cols = _outputSize;
@@ -48,57 +48,36 @@ void feedForward(FloatMatrix *_input, NeuralNetwork *_network) {
     // NOTE: using currentLayersNumber instead of totalLayersNumber because
     // probably it's safer but see if there is a better implementation of this.
 
-    FloatMatrix *toFree;
+    FloatMatrix *prev_input = input;
+
     for (int index = 0; index < _network->currentLayersNumber; index++) {
-        // printf("\n");
-        // for (int i = 0; i < input->rows * input->cols; i++) {
-        //     printf("%f ", input->values[i]);
-        // }
-        // printf("\n");
-        FloatMatrix *temp = malloc(sizeof(FloatMatrix));
-        LayerFunctionErrors error = _network->layers[index].layerFunction(
-            _network->layers[index].weights, input, temp);
 
+        FloatMatrix *linear_output = malloc(sizeof(FloatMatrix));
+        _network->layers[index].layerFunction(_network->layers[index].weights,
+                                              prev_input, linear_output);
 
-        printf("\n");
-        for (int i = 0; i < temp->rows * temp->cols; i++) {
-            printf("%f ", temp->values[i]);
-        }
-        printf("\n");
+        free(prev_input->values);
+        free(prev_input);
 
-        printf("\n");
-        toFree = input;
-        input = temp;
-        free(toFree->values);
-        free(toFree);
+        FloatMatrix *biased_output = malloc(sizeof(FloatMatrix));
+        matrixAdditionFloat(linear_output, _network->layers[index].biases,
+                            biased_output);
 
-        // TODO: fix with something nicer
-        if (error != 0) {
-            printf("error in the feed forwand computation");
-        }
+        free(linear_output->values);
+        free(linear_output);
 
-        FloatMatrix *temp2 = malloc(sizeof(FloatMatrix));
-        matrixAdditionFloat(input, _network->layers[index].biases, temp2);
+        sigmoid(biased_output);
 
-        toFree = input;
-        input = temp2;
-        sigmoid(input);
-
-        free(toFree->values);
-        free(toFree);
+        prev_input = biased_output;
     }
+
+    input = prev_input;
 
     // copy to output element by element
     for (int i = 0; i < input->rows * input->cols; i++) {
         _network->output->values[i] = input->values[i];
     }
 
-    // print output matrix
-    printf("\n\n");
-    for (int i = 0; i < _network->output->rows * _network->output->cols; i++) {
-        printf("%f ", _network->output->values[i]);
-    }
-    printf("\n");
-
+    free(input->values);
     free(input);
 }

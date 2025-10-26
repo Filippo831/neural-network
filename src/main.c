@@ -20,9 +20,12 @@ int main(int argc, char **argv) {
 
     feedForward(&input, nn);
 
+    printf("\n");
     for (int index = 0; index < 10; index++) {
         printf("%f, ", nn->output->values[index]);
     }
+    printf("\n");
+    
 
     free(layer1->biases);
     free(layer1->weights);
