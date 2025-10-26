@@ -4,13 +4,16 @@
 #include <stdio.h>
 
 int main(int argc, char **argv) {
-    NeuralNetwork *nn = createNeuralNetwork(2, 10, 10);
+    NeuralNetwork *nn = createNeuralNetwork(3, 10, 10);
 
-    Layer *layer1 = initLayer(10, 10, STANDART);
+    Layer *layer1 = initLayer(10, 100, STANDART);
     addLayer(nn, layer1);
 
-    Layer *layer2 = initLayer(10, 5, STANDART);
+    Layer *layer2 = initLayer(100, 20, STANDART);
     addLayer(nn, layer2);
+
+    Layer *layer3 = initLayer(20, 10, STANDART);
+    addLayer(nn, layer3);
 
     FloatMatrix input;
     input.cols = 1;
@@ -27,12 +30,6 @@ int main(int argc, char **argv) {
     printf("\n");
     
 
-    free(layer1->biases);
-    free(layer1->weights);
-    free(layer1);
-    free(layer2->biases);
-    free(layer2->weights);
-    free(layer2);
-    free(nn);
+    freeNeuralNetwork(nn);
     return 0;
 }

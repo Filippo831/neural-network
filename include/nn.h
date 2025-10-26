@@ -28,7 +28,6 @@ typedef struct NeuralNetwork {
 
 } NeuralNetwork;
 
-
 /*
  *  @params
  *  _totalLayersNumber: amount of layers to add to the neural network
@@ -37,12 +36,13 @@ typedef struct NeuralNetwork {
  *
  *  @body
  *  init the neural network and define the input and output sizes
- *  
+ *
  *  @return
  *  return the pointer to the neural network created in the heap
  *
  */
-NeuralNetwork *createNeuralNetwork(int _totalLayersNumber, int _inputSize, int _outputSize);
+NeuralNetwork *createNeuralNetwork(int _totalLayersNumber, int _inputSize,
+                                   int _outputSize);
 
 /*
  *  @params
@@ -72,3 +72,27 @@ void addLayer(NeuralNetwork *_network, Layer *_layer);
  *
  */
 void feedForward(FloatMatrix *_input, NeuralNetwork *_network);
+
+/*
+ * @params
+ * _network: network to free the values from
+ *
+ * @body
+ * free whatever was allocated to make the neural network work
+ *
+ * list of elements to free:
+ * foreach layer:
+ * - _network->layers->biasesMatrix->values
+ * - _network->layers->biasesMatrix
+ * - _network->layers->weightsMatrix->values
+ * - _network->layers->weightsMatrix
+ * end
+ *
+ * - _network->layers
+ * - _network->input->values
+ * - _network->values
+ * - _network->output->values
+ * - _network->output
+ *
+ */
+void freeNeuralNetwork(NeuralNetwork *_network);

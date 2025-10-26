@@ -81,3 +81,20 @@ void feedForward(FloatMatrix *_input, NeuralNetwork *_network) {
     free(input->values);
     free(input);
 }
+
+
+void freeNeuralNetwork(NeuralNetwork *_network) {
+    free(_network->input->values);
+    free(_network->input);
+    free(_network->output->values);
+    free(_network->output);
+
+    for (int index = 0; index < _network->currentLayersNumber; index++) {
+        free(_network->layers[index].biases->values);
+        free(_network->layers[index].biases);
+        free(_network->layers[index].weights->values);
+        free(_network->layers[index].weights);
+    }
+    free(_network->layers);
+    free(_network);
+}

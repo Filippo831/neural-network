@@ -16,7 +16,7 @@ void initBiases(FloatMatrix *_input) {
 
     _input->values = malloc(sizeof(float) * (_input->cols * _input->rows));
     for (int index = 0; index < _input->cols * _input->rows; index++) {
-        _input->values[index] = 0;
+        _input->values[index] = ((float)(rand() % 40000) / 10000) - 2.0;
     }
 }
 
@@ -40,6 +40,7 @@ Layer *initLayer(int _inputs, int _nodes, LayerType _type) {
     weightsMatrix->cols = _inputs;
     weightsMatrix->rows = _nodes;
     netLayer->weights = weightsMatrix;
+    initWeights(weightsMatrix);
 
     switch (_type) {
     case STANDART:
