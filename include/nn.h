@@ -1,6 +1,7 @@
 #pragma once
 
 #include "layer.h"
+#include "math_functions.h"
 
 /*
  *   @params
@@ -72,6 +73,20 @@ void addLayer(NeuralNetwork *_network, Layer *_layer);
  *
  */
 void feedForward(FloatMatrix *_input, NeuralNetwork *_network);
+
+/*
+ * @params
+ * _learningRate
+ * _nn
+ * _input: give the inputs to train the neural network, It can be both a single value or an array depending on the _batchSize
+ * _output: The expected outputs for the inputs
+ * _batchSize: how many iteration to make before changing the weigths values
+ *
+ * @body
+ * compute the backprogagation function to train the neural network
+ *
+ */
+void backPropagation(float _learningRate, NeuralNetwork *_nn, FloatMatrix *_input, FloatMatrix *_output, int _batchSize);
 
 /*
  * @params

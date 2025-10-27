@@ -5,7 +5,16 @@
 
 void sigmoid(FloatMatrix *_input) {
     for (int index = 0; index < _input->cols * _input->rows; index++) {
+        // x = 1 / (1 + e^(-x))
         _input->values[index] = 1 / (1 + exp(_input->values[index]));
+    }
+}
+
+void sigmoidDerivative(FloatMatrix *_input) {
+    for (int index = 0; index < _input->cols * _input->rows; index++) {
+        // x = x * (1 - x)
+        _input->values[index] =
+            _input->values[index] * (1 - _input->values[index]);
     }
 }
 

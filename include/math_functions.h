@@ -31,6 +31,18 @@ float getIndexMatrix(int _row, int _cols, FloatMatrix *_matrix);
 void sigmoid(FloatMatrix *_input);
 
 /*
+ * @param
+ * matrix on which caluclate the derivative
+ *
+ * @body
+ * calculate the derivative and overwrite the matrix since the input matrix will
+ * be the error matrix and is note used anymore. You only need to keep track of
+ * the deltas to calculate the weigths change after the batch runs
+ *
+ */
+void sigmoidDerivative(FloatMatrix *_input);
+
+/*
  *   @params
  *   left: left matrix
  *   right: right matrix
@@ -78,4 +90,4 @@ float loss(FloatMatrix *_predicted, FloatMatrix *_actual);
  */
 
 void matrixAdditionFloat(FloatMatrix *_left, FloatMatrix *_right,
-                    FloatMatrix *_result);
+                         FloatMatrix *_result);
