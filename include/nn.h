@@ -22,8 +22,6 @@ typedef struct NeuralNetwork {
 
     int currentLayersNumber;
 
-    // NOTE: for now these 2 values are not used because the feedForward
-    // function uses a param as input and return as output
     FloatMatrix *input;
     FloatMatrix *output;
 

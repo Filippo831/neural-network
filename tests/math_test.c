@@ -194,7 +194,6 @@ void test_matrix_addition(void) {
     int isGood = 1;
     int totalElements = expectedRows * expectedCols;
 
-    // TODO: understand why the values get erased after the furst cycle
     for (int index = 0; index < totalElements; index++) {
         // Use a small epsilon for floating point comparison (e.g., 0.0001)
         if (fabs(expectedResult[index] - c.values[index]) > 1e-4) {

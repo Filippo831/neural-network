@@ -9,18 +9,18 @@ NeuralNetwork *createNeuralNetwork(int _totalLayersNumber, int _inputSize,
     nn->totalLayersNumber = _totalLayersNumber;
     nn->currentLayersNumber = 0;
 
-    nn->layers = (Layer *)malloc(sizeof(Layer) * _totalLayersNumber);
+    nn->layers = malloc(sizeof(Layer) * _totalLayersNumber);
 
     nn->input = malloc(sizeof(FloatMatrix));
 
     nn->input->cols = _inputSize;
     nn->input->rows = 1;
-    nn->input->values = (float *)malloc(sizeof(float) * _inputSize);
+    nn->input->values = malloc(sizeof(float) * _inputSize);
 
     nn->output = malloc(sizeof(NeuralNetwork));
     nn->output->cols = _outputSize;
     nn->output->rows = 1;
-    nn->output->values = (float *)malloc(sizeof(float) * _outputSize);
+    nn->output->values = malloc(sizeof(float) * _outputSize);
 
     return nn;
 }
@@ -33,8 +33,7 @@ void feedForward(FloatMatrix *_input, NeuralNetwork *_network) {
 
     FloatMatrix *input = malloc(sizeof(FloatMatrix));
 
-    input->values =
-        (float *)malloc(sizeof(float) * (_input->cols * _input->rows));
+    input->values = malloc(sizeof(float) * (_input->cols * _input->rows));
 
     input->cols = _input->cols;
     input->rows = _input->rows;
@@ -82,6 +81,36 @@ void feedForward(FloatMatrix *_input, NeuralNetwork *_network) {
     free(input);
 }
 
+void backPropagation(float _learningRate, NeuralNetwork *_nn,
+                     FloatMatrix *_input, FloatMatrix *_output,
+                     int _batchSize) {
+    // allocate memory to save the deltas values
+    FloatMatrix *deltas =
+        malloc(sizeof(FloatMatrix) * _nn->currentLayersNumber);
+
+    // allocate a delta matrix for each layer
+    for (int index = 0; index < _nn->currentLayersNumber; index++) {
+        deltas[index].cols = 1;
+        deltas[index].rows = _nn->layers[index].nodes;
+        deltas[index].values = malloc(sizeof(float) * _nn->layers[index].nodes);
+    }
+
+    // forward propagation to find the calculated result
+    feedForward(_input, _nn);
+
+    // calculate the first error to the output
+
+
+    // for each layer
+
+    // multiply the cost result with the derivative of the activation function
+
+    // sum the value got to the delta matrix by the previous values and itself
+    // divided by the batch size to make an average
+
+    // dot prouct the previous result with the transpose of the weights matrix
+    // to get the next error
+}
 
 void freeNeuralNetwork(NeuralNetwork *_network) {
     free(_network->input->values);

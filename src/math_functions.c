@@ -79,3 +79,5 @@ void matrixAdditionFloat(FloatMatrix *_left, FloatMatrix *_right,
         _result->values[index] = _left->values[index] + _right->values[index];
     }
 }
+
+

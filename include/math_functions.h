@@ -91,3 +91,21 @@ float loss(FloatMatrix *_predicted, FloatMatrix *_actual);
 
 void matrixAdditionFloat(FloatMatrix *_left, FloatMatrix *_right,
                          FloatMatrix *_result);
+
+
+// TODO: understand if it's better to make a function that transpose only or if
+// include the product to avoid making useless duplicates
+/*
+ *
+ * @param
+ * _input: the input on which compute the transpose
+ *
+ * @return
+ * return the transpase in a different memory location to keep the input the
+ * same
+ *
+ * @body
+ * calculate the transpose defining a new matrix in memory to save the previous
+ * values intact.
+ *
+ */
