@@ -1,4 +1,5 @@
 #include "../include/math_functions.h"
+#include <cmath>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -81,3 +82,9 @@ void matrixAdditionFloat(FloatMatrix *_left, FloatMatrix *_right,
 }
 
 
+
+void meanSquaredError(FloatMatrix *_predictions, float *_targets) {
+    for (int index = 0; index < _predictions->cols; index++) {
+        _predictions->values[index] = pow(_predictions->values[index] - _targets[index], 2);
+    }
+}

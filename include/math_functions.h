@@ -79,7 +79,6 @@ LayerFunctionErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
 float loss(FloatMatrix *_predicted, FloatMatrix *_actual);
 
 /*
- *
  *   @param
  *   _left: left operand matrix
  *   _right: right operand matrix
@@ -92,6 +91,19 @@ float loss(FloatMatrix *_predicted, FloatMatrix *_actual);
 void matrixAdditionFloat(FloatMatrix *_left, FloatMatrix *_right,
                          FloatMatrix *_result);
 
+/*
+ *   @param
+ *   _predictions: value got from the feed forward process
+ *   _targets: right result
+ *
+ *   @body
+ *   compute the mean squared error of the predicted result compared to the
+ * actual result. Override the _predictions matrix since we don't need it
+ * anymore and the sizes are the same
+ *
+ */
+
+void meanSquaredError(FloatMatrix *_predictions, float *_targets);
 
 // TODO: understand if it's better to make a function that transpose only or if
 // include the product to avoid making useless duplicates
