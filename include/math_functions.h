@@ -88,8 +88,7 @@ float loss(FloatMatrix *_predicted, FloatMatrix *_actual);
  *   compute the sum of 2 matrices
  */
 
-void matrixAdditionFloat(FloatMatrix *_left, FloatMatrix *_right,
-                         FloatMatrix *_result);
+void matrixAdditionFloat(FloatMatrix *_left, FloatMatrix *_right, int _dividingFactor);
 
 /*
  *   @param
@@ -103,14 +102,15 @@ void matrixAdditionFloat(FloatMatrix *_left, FloatMatrix *_right,
  *
  */
 
-void meanSquaredError(FloatMatrix *_predictions, float *_targets);
+void meanSquaredError(FloatMatrix *_predictions, FloatMatrix*_targets);
 
 // TODO: understand if it's better to make a function that transpose only or if
 // include the product to avoid making useless duplicates
 /*
  *
  * @param
- * _input: the input on which compute the transpose
+ * _left:
+ * _right
  *
  * @return
  * return the transpase in a different memory location to keep the input the

@@ -1,5 +1,4 @@
 #include "../include/math_functions.h"
-#include <cmath>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -68,23 +67,17 @@ float loss(FloatMatrix *_predicted, FloatMatrix *_actual) {
 }
 
 void matrixAdditionFloat(FloatMatrix *_left, FloatMatrix *_right,
-                         FloatMatrix *_result) {
-
-    _result->cols = _left->cols;
-    _result->rows = _left->rows;
-
-    _result->values = malloc(sizeof(float) * (_result->rows * _result->cols));
-
-    // sum element by element
+                         int _dividingFactor) {
+    // sum element by element and override the _left matrix
     for (int index = 0; index < _left->rows * _left->cols; index++) {
-        _result->values[index] = _left->values[index] + _right->values[index];
+        _left->values[index] =
+            _left->values[index] + (_right->values[index] / _dividingFactor);
     }
 }
 
-
-
-void meanSquaredError(FloatMatrix *_predictions, float *_targets) {
+void meanSquaredError(FloatMatrix *_predictions, FloatMatrix *_targets) {
     for (int index = 0; index < _predictions->cols; index++) {
-        _predictions->values[index] = pow(_predictions->values[index] - _targets[index], 2);
+        _predictions->values[index] =
+            pow(_predictions->values[index] - _targets->values[index], 2);
     }
 }

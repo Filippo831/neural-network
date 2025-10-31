@@ -1,5 +1,4 @@
 #include "../include/nn.h"
-#include <stdio.h>
 #include <stdlib.h>
 
 NeuralNetwork *createNeuralNetwork(int _totalLayersNumber, int _inputSize,
@@ -17,7 +16,7 @@ NeuralNetwork *createNeuralNetwork(int _totalLayersNumber, int _inputSize,
     nn->input->rows = 1;
     nn->input->values = malloc(sizeof(float) * _inputSize);
 
-    nn->output = malloc(sizeof(NeuralNetwork));
+    nn->output = malloc(sizeof(FloatMatrix));
     nn->output->cols = _outputSize;
     nn->output->rows = 1;
     nn->output->values = malloc(sizeof(float) * _outputSize);
@@ -52,22 +51,20 @@ void feedForward(FloatMatrix *_input, NeuralNetwork *_network) {
     for (int index = 0; index < _network->currentLayersNumber; index++) {
 
         FloatMatrix *linear_output = malloc(sizeof(FloatMatrix));
+
+        // dot product with the weights
         _network->layers[index].layerFunction(_network->layers[index].weights,
                                               prev_input, linear_output);
 
         free(prev_input->values);
         free(prev_input);
 
-        FloatMatrix *biased_output = malloc(sizeof(FloatMatrix));
-        matrixAdditionFloat(linear_output, _network->layers[index].biases,
-                            biased_output);
+        // add the biases
+        matrixAdditionFloat(linear_output, _network->layers[index].biases);
 
-        free(linear_output->values);
-        free(linear_output);
+        sigmoid(linear_output);
 
-        sigmoid(biased_output);
-
-        prev_input = biased_output;
+        prev_input = linear_output;
     }
 
     input = prev_input;
@@ -99,17 +96,20 @@ void backPropagation(float _learningRate, NeuralNetwork *_nn,
     feedForward(_input, _nn);
 
     // calculate the first error to the output
+    meanSquaredError(_nn->output, _output);
 
+    // for each layer from the last to first
+    for (int index = _nn->currentLayersNumber - 1; index >= 0; index--) {
+        // multiply the cost result with the derivative of the activation
+        // function
+        sigmoidDerivative(_nn->output);
 
-    // for each layer
-
-    // multiply the cost result with the derivative of the activation function
-
-    // sum the value got to the delta matrix by the previous values and itself
-    // divided by the batch size to make an average
-
-    // dot prouct the previous result with the transpose of the weights matrix
-    // to get the next error
+        // sum the value got to the delta matrix by the previous values and
+        // itself divided by the batch size to make an average
+        matrixAdditionFloat(&deltas[index], _nn->output, _batchSize);
+        // dot prouct the previous result with the transpose of the weights
+        // matrix to get the next error
+    }
 }
 
 void freeNeuralNetwork(NeuralNetwork *_network) {

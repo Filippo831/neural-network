@@ -1,7 +1,6 @@
 #include "../include/math_functions.h"
 #include <CUnit/Basic.h>
 #include <CUnit/CUnit.h>
-#include <stdio.h>
 
 void test_dot_product_correct(void) {
     // ------------------- Setup Matrix A (2x2) -------------------
@@ -183,12 +182,11 @@ void test_matrix_addition(void) {
     int expectedCols = 2;
 
     // ------------------- Perform Matrix Addition -------------------
-    FloatMatrix c;
-    matrixAdditionFloat(&a, &b, &c);
+    matrixAdditionFloat(&a, &b);
 
     // ------------------- Check Result Matrix Dimensions -------------------
-    CU_ASSERT_EQUAL(c.rows, expectedRows);
-    CU_ASSERT_EQUAL(c.cols, expectedCols);
+    CU_ASSERT_EQUAL(a.rows, expectedRows);
+    CU_ASSERT_EQUAL(a.cols, expectedCols);
 
     // ------------------- Check Result Matrix Values -------------------
     int isGood = 1;
@@ -196,7 +194,7 @@ void test_matrix_addition(void) {
 
     for (int index = 0; index < totalElements; index++) {
         // Use a small epsilon for floating point comparison (e.g., 0.0001)
-        if (fabs(expectedResult[index] - c.values[index]) > 1e-4) {
+        if (fabs(expectedResult[index] - a.values[index]) > 1e-4) {
             isGood = 0;
             break;
         }
