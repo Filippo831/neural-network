@@ -44,8 +44,6 @@ MatrixErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
         }
     }
 
-    // FIX: for some reason you need this to make the tests work
-    fflush(stdin);
 
     _result->rows = _left->rows;
     _result->cols = _right->cols;
@@ -88,18 +86,24 @@ MatrixErrors transposeDotProductFloat(FloatMatrix *_left, FloatMatrix *_right) {
         return WRONG_SIZES;
     }
 
-    float *resultMatrix = malloc(sizeof(float) * (_left->rows * _right->cols));
+    float *resultMatrix = malloc(sizeof(float) * (_left->cols * _right->rows));
 
     int matrixIndex = 0;
 
-    for (int r = 0; r < _left->rows; r++) {
+    /*
+     * multiplying a function with his transpose is like having the original
+     * matrix and swap the indexes. So you iterate on the rows of the original
+     * and on the rows of the second one istead of doing row times cols
+     */
+    for (int r = 0; r < _left->cols; r++) {
         for (int c = 0; c < _right->cols; c++) {
             float intermediateResult = 0;
-            for (int index = 0; index < _left->cols; index++) {
+            for (int index = 0; index < _left->rows; index++) {
                 intermediateResult += getIndexMatrix(index, r, _left) *
                                       getIndexMatrix(index, c, _right);
             }
             resultMatrix[matrixIndex++] = intermediateResult;
+            printf("\n");
         }
     }
 

@@ -54,9 +54,7 @@ void sigmoidDerivative(FloatMatrix *_input);
  *   correct: return enum with error specific to this calculation
  */
 
-// TODO: change this to general matrices computation errors so you can use the
-// same for the matrices addition
-typedef enum LayerFunctionErrors {
+typedef enum MatrixErrors {
     NO_ERROR,
     WRONG_SIZES,
 } MatrixErrors;

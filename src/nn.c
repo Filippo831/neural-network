@@ -98,6 +98,13 @@ void backPropagation(float _learningRate, NeuralNetwork *_nn,
     // calculate the first error to the output
     meanSquaredError(_nn->output, _output);
 
+    // TODO: make this iterate _batchSize number of times, make the input an
+    // array of arrays and understand how to cope with the training data as
+    // input and how to save the status of the neural network maybe.
+    // You also need to update the values of weights and biases at the end of
+    // every batch
+    //
+    //
     // for each layer from the last to first
     for (int index = _nn->currentLayersNumber - 1; index >= 0; index--) {
         // multiply the cost result with the derivative of the activation
@@ -109,6 +116,7 @@ void backPropagation(float _learningRate, NeuralNetwork *_nn,
         matrixAdditionFloat(&deltas[index], _nn->output, _batchSize);
         // dot prouct the previous result with the transpose of the weights
         // matrix to get the next error
+        transposeDotProductFloat(_nn->layers[index].weights, _nn->output);
     }
 }
 
