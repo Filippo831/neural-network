@@ -22,8 +22,8 @@ float getIndexMatrix(int _row, int _col, FloatMatrix *_matrix) {
     return _matrix->values[_row * _matrix->cols + _col];
 };
 
-LayerFunctionErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
-                                    FloatMatrix *_result) {
+MatrixErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
+                             FloatMatrix *_result) {
 
     if (_left->cols != _right->rows) {
         return WRONG_SIZES;
@@ -80,4 +80,31 @@ void meanSquaredError(FloatMatrix *_predictions, FloatMatrix *_targets) {
         _predictions->values[index] =
             pow(_predictions->values[index] - _targets->values[index], 2);
     }
+}
+
+MatrixErrors transposeDotProductFloat(FloatMatrix *_left, FloatMatrix *_right) {
+
+    if (_left->rows != _right->rows) {
+        return WRONG_SIZES;
+    }
+
+    float *resultMatrix = malloc(sizeof(float) * (_left->rows * _right->cols));
+
+    int matrixIndex = 0;
+
+    for (int r = 0; r < _left->rows; r++) {
+        for (int c = 0; c < _right->cols; c++) {
+            float intermediateResult = 0;
+            for (int index = 0; index < _left->cols; index++) {
+                intermediateResult += getIndexMatrix(index, r, _left) *
+                                      getIndexMatrix(index, c, _right);
+            }
+            resultMatrix[matrixIndex++] = intermediateResult;
+        }
+    }
+
+    _right->rows = _left->cols;
+
+    _right->values = resultMatrix;
+    return NO_ERROR;
 }

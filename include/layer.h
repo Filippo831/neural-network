@@ -24,7 +24,7 @@ typedef struct Layer {
     FloatMatrix *weights;
 
     // FloatMatrix *_leftMatrix, FloatMatrix *_rightMatrix, FloatMatrix *_output
-    LayerFunctionErrors (*layerFunction)(FloatMatrix *, FloatMatrix *,
+    MatrixErrors (*layerFunction)(FloatMatrix *, FloatMatrix *,
                                          FloatMatrix *);
 } Layer;
 

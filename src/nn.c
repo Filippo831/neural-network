@@ -60,7 +60,7 @@ void feedForward(FloatMatrix *_input, NeuralNetwork *_network) {
         free(prev_input);
 
         // add the biases
-        matrixAdditionFloat(linear_output, _network->layers[index].biases);
+        matrixAdditionFloat(linear_output, _network->layers[index].biases, 1);
 
         sigmoid(linear_output);
 

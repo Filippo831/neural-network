@@ -59,9 +59,9 @@ void sigmoidDerivative(FloatMatrix *_input);
 typedef enum LayerFunctionErrors {
     NO_ERROR,
     WRONG_SIZES,
-} LayerFunctionErrors;
+} MatrixErrors;
 
-LayerFunctionErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
+MatrixErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
                                     FloatMatrix *_result);
 
 /*
@@ -88,7 +88,8 @@ float loss(FloatMatrix *_predicted, FloatMatrix *_actual);
  *   compute the sum of 2 matrices
  */
 
-void matrixAdditionFloat(FloatMatrix *_left, FloatMatrix *_right, int _dividingFactor);
+void matrixAdditionFloat(FloatMatrix *_left, FloatMatrix *_right,
+                         int _dividingFactor);
 
 /*
  *   @param
@@ -102,22 +103,17 @@ void matrixAdditionFloat(FloatMatrix *_left, FloatMatrix *_right, int _dividingF
  *
  */
 
-void meanSquaredError(FloatMatrix *_predictions, FloatMatrix*_targets);
+void meanSquaredError(FloatMatrix *_predictions, FloatMatrix *_targets);
 
-// TODO: understand if it's better to make a function that transpose only or if
-// include the product to avoid making useless duplicates
 /*
  *
  * @param
- * _left:
- * _right
- *
- * @return
- * return the transpase in a different memory location to keep the input the
- * same
+ * _left: transpose matrix, not modified
+ * _right: fixed matrix, gets modified with the result
  *
  * @body
  * calculate the transpose defining a new matrix in memory to save the previous
  * values intact.
  *
  */
+MatrixErrors transposeDotProductFloat(FloatMatrix *_left, FloatMatrix *_right);

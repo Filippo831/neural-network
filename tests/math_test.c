@@ -182,7 +182,7 @@ void test_matrix_addition(void) {
     int expectedCols = 2;
 
     // ------------------- Perform Matrix Addition -------------------
-    matrixAdditionFloat(&a, &b);
+    matrixAdditionFloat(&a, &b, 1);
 
     // ------------------- Check Result Matrix Dimensions -------------------
     CU_ASSERT_EQUAL(a.rows, expectedRows);
@@ -200,6 +200,68 @@ void test_matrix_addition(void) {
         }
     }
 
+    CU_ASSERT_EQUAL(isGood, 1);
+}
+
+// transposeDotProductFloat test function with matrices not squared
+void test_transpose_dot_product(void) {
+    // ------------------- Setup Matrix A (2x3) -------------------
+    FloatMatrix a;
+    float aArray[] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
+    a.values = aArray;
+    a.rows = 2;
+    a.cols = 3;
+
+    // ------------------- Setup Matrix B (2x2) -------------------
+    FloatMatrix b;
+    float bArray[] = {7.0, 8.0, 9.0, 10.0};
+    b.values = bArray;
+    b.rows = 2;
+    b.cols = 2;
+
+    // ------------------- Expected Result (3x2) -------------------
+    // R = A^T * B
+    // A^T = | 1.0 4.0 |
+    //       | 2.0 5.0 |
+    //       | 3.0 6.0 |
+    //
+    // R = | (1*7 + 4*9) (1*8 + 4*10) | = | 43.0 48.0 |
+    //     | (2*7 + 5*9) (2*8 + 5*10) |   | 56.0 63.0 |
+    //     | (3*7 + 6*9) (3*8 + 6*10) |   | 69.0 78.0 |
+    float expectedResult[] = {43.0, 48.0, 56.0, 63.0, 69.0, 78.0};
+    int expectedRows = 3;
+    int expectedCols = 2;
+
+    // ------------------- Perform Transpose Dot Product -------------------
+    FloatMatrix c;
+    int error = transposeDotProductFloat(&a, &b);
+
+    // ------------------- Check for Errors -------------------
+    if (error != NO_ERROR) {
+        CU_FAIL("transposeDotProductFloat returned an error");
+        return;
+    }
+
+    // ------------------- Check Result Matrix Dimensions -------------------
+    CU_ASSERT_EQUAL(b.rows, expectedRows);
+    CU_ASSERT_EQUAL(b.cols, expectedCols);
+
+    // ------------------- Check Result Matrix Values -------------------
+    int isGood = 1;
+    int totalElements = expectedRows * expectedCols;
+
+    //print b values for debugging
+    for (int i = 0; i < totalElements; i++) {
+        printf("b.values[%d] = %f\n", i, b.values[i]);
+    }
+
+    for (int index = 0; index < totalElements; index++) {
+        // Use a small epsilon for floating point comparison (e.g., 0.0001)
+        if (fabs(expectedResult[index] - b.values[index]) > 1e-4) {
+            isGood = 0;
+            break;
+        }
+    }
     CU_ASSERT_EQUAL(isGood, 1);
 }
 
@@ -251,6 +313,11 @@ int main(void) {
     }
     if ((CU_add_test(pSuite, "Test matrix addition function",
                      test_matrix_addition)) == NULL) {
+        CU_cleanup_registry();
+        return CU_get_error();
+    }
+    if ((CU_add_test(pSuite, "Test transpose dot product function",
+                     test_transpose_dot_product)) == NULL) {
         CU_cleanup_registry();
         return CU_get_error();
     }
