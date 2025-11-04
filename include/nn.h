@@ -76,15 +76,17 @@ void feedForward(FloatMatrix *_input, NeuralNetwork *_network);
  * @params
  * _learningRate
  * _nn
- * _input: give the inputs to train the neural network, It can be both a single value or an array depending on the _batchSize
- * _output: The expected outputs for the inputs
- * _batchSize: how many iteration to make before changing the weigths values
+ * _input: give the inputs to train the neural network, It can be both a single
+ * value or an array depending on the _batchSize _output: The expected outputs
+ * for the inputs _batchSize: how many iteration to make before changing the
+ * weigths values
  *
  * @body
  * compute the backprogagation function to train the neural network
  *
  */
-void backPropagation(float _learningRate, NeuralNetwork *_nn, FloatMatrix *_input, FloatMatrix *_output, int _batchSize);
+void backPropagation(float _learningRate, NeuralNetwork *_network,
+                     FloatMatrix *_input, FloatMatrix *_output, int _batchSize);
 
 /*
  * @params

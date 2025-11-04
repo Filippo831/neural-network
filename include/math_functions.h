@@ -60,7 +60,7 @@ typedef enum MatrixErrors {
 } MatrixErrors;
 
 MatrixErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
-                                    FloatMatrix *_result);
+                             FloatMatrix *_result);
 
 /*
  *  @param
@@ -115,3 +115,13 @@ void meanSquaredError(FloatMatrix *_predictions, FloatMatrix *_targets);
  *
  */
 MatrixErrors transposeDotProductFloat(FloatMatrix *_left, FloatMatrix *_right);
+
+/*
+ * @param
+ * _input: matrix to normalize. It will be also the output
+ *
+ * @body
+ * perform a min-max normalization to set the values to a range from 0 to 1.
+ *
+ */
+void normalizeInput(FloatMatrix *_input);

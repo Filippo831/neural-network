@@ -44,7 +44,6 @@ MatrixErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
         }
     }
 
-
     _result->rows = _left->rows;
     _result->cols = _right->cols;
 
@@ -111,4 +110,29 @@ MatrixErrors transposeDotProductFloat(FloatMatrix *_left, FloatMatrix *_right) {
 
     _right->values = resultMatrix;
     return NO_ERROR;
+}
+
+void normalizeInput(FloatMatrix *_input) {
+    // find max and min
+    float maxValue = _input->values[0];
+    float minValue = _input->values[0];
+
+    for (int index = 1; index < _input->rows * _input->cols; index++) {
+
+        // check if the value is larger than the max
+        if (_input->values[index] > maxValue) {
+            maxValue = _input->values[index];
+        }
+
+        // check if the value is smaller than the min
+        else if (_input->values[index] < minValue) {
+            minValue = _input->values[index];
+        }
+    }
+
+    // normalize the values
+    for (int index = 0; index < _input->rows * _input->cols; index++) {
+        _input->values[index] =
+            (_input->values[index] - minValue) / (maxValue - minValue) * (2) - 1;
+    }
 }
