@@ -83,6 +83,47 @@ void feedForward(FloatMatrix *_input, NeuralNetwork *_network) {
     free(input);
 }
 
+void feedForwandSaveIntermediate(FloatMatrix *_input, NeuralNetwork *_network,
+                                 FloatMatrix *_results) {
+    _results[0].values =
+        malloc(sizeof(float) * (_input->cols * _input->rows));
+
+    _results[0].cols = _input->cols;
+    _results[0].rows = _input->rows;
+
+    for (int index = 0; index < _input->cols * _input->rows; index++) {
+        _results[0].values[index] = _input->values[index];
+    }
+
+    // WARNING: I don't know if this is correct, could raise a problem
+    normalizeInput(&_results[0]);
+
+    // NOTE: using currentLayersNumber instead of totalLayersNumber because
+    // probably it's safer but see if there is a better implementation of
+    // this.
+
+    for (int index = 0; index < _network->currentLayersNumber; index++) {
+
+        FloatMatrix *linear_output = malloc(sizeof(FloatMatrix));
+
+        // dot product with the weights
+        _network->layers[index].layerFunction(_network->layers[index].weights,
+                                              &_results[index],
+                                              &_results[index + 1]);
+
+        // add the biases
+        matrixAdditionFloat(linear_output, _network->layers[index].biases, 1);
+
+        sigmoid(&_results[index + 1]);
+    }
+
+    // copy to output element by element
+#define NET_OUTPUT _results[_network->currentLayersNumber + 1]
+    for (int i = 0; i < NET_OUTPUT.rows * NET_OUTPUT.cols; i++) {
+        _network->output->values[i] = NET_OUTPUT.values[i];
+    }
+}
+
 void backPropagation(float _learningRate, NeuralNetwork *_network,
                      FloatMatrix *_input, FloatMatrix *_output,
                      int _batchSize) {
@@ -133,45 +174,8 @@ void backPropagation(float _learningRate, NeuralNetwork *_network,
 
         // forward propagation to find the calculated result and keep the
         // intermediate values
+        feedForwandSaveIntermediate(_input, _network, intermediateResult);
 
-        intermediateResult[0].values =
-            malloc(sizeof(float) * (_input->cols * _input->rows));
-
-        intermediateResult[0].cols = _input->cols;
-        intermediateResult[0].rows = _input->rows;
-
-        for (int index = 0; index < _input->cols * _input->rows; index++) {
-            intermediateResult[0].values[index] = _input->values[index];
-        }
-
-        // WARNING: I don't know if this is correct, could raise a problem
-        normalizeInput(&intermediateResult[0]);
-
-        // NOTE: using currentLayersNumber instead of totalLayersNumber because
-        // probably it's safer but see if there is a better implementation of
-        // this.
-
-        for (int index = 0; index < _network->currentLayersNumber; index++) {
-
-            FloatMatrix *linear_output = malloc(sizeof(FloatMatrix));
-
-            // dot product with the weights
-            _network->layers[index].layerFunction(
-                _network->layers[index].weights, &intermediateResult[index],
-                &intermediateResult[index + 1]);
-
-            // add the biases
-            matrixAdditionFloat(linear_output, _network->layers[index].biases,
-                                1);
-
-            sigmoid(&intermediateResult[index + 1]);
-        }
-
-        // copy to output element by element
-#define NET_OUTPUT intermediateResult[_network->currentLayersNumber + 1]
-        for (int i = 0; i < NET_OUTPUT.rows * NET_OUTPUT.cols; i++) {
-            _network->output->values[i] = NET_OUTPUT.values[i];
-        }
 
         // calculate the first error to the output
         meanSquaredError(_network->output, _output);

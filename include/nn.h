@@ -72,6 +72,23 @@ void addLayer(NeuralNetwork *_network, Layer *_layer);
  */
 void feedForward(FloatMatrix *_input, NeuralNetwork *_network);
 
+
+/*
+ * @params
+ * _input: matrix containing input data
+ * _network: network that will process that data
+ *
+ * @output
+ * Matrix containing the result matrix
+ *
+ * @body
+ * this function will pass every sigle layer of the neural network making the
+ * calculation and passing the result to the next layer
+ *
+ */
+void feedForwandSaveIntermediate(FloatMatrix *_input, NeuralNetwork *_network, FloatMatrix *_results);
+
+
 /*
  * @params
  * _learningRate
