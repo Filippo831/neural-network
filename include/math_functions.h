@@ -78,8 +78,8 @@ float loss(FloatMatrix *_predicted, FloatMatrix *_actual);
 
 /*
  *   @param
- *   _left: left operand matrix
- *   _right: right operand matrix
+ *   _left: left operand matrix, keeps the result
+ *   _right: right operand matrix, not changed
  *   _result: result matrix
  *
  *   @body

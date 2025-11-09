@@ -189,7 +189,6 @@ void backPropagation(float _learningRate, NeuralNetwork *_network,
             sigmoidDerivative(_network->output);
             multiplicationFloat(_network->output, &intermediateResult[index]);
 
-
             // update the biases variation average
             matrixAdditionFloat(&biasesVariation[index], _network->output,
                                 _batchSize);
@@ -216,8 +215,12 @@ void backPropagation(float _learningRate, NeuralNetwork *_network,
         }
     }
 
-    // update the weigths and the biases
+    // update the weigths and the biases for each layer
     for (int index = _network->currentLayersNumber - 1; index >= 0; index--) {
+        matrixAdditionFloat(_network->layers[index].weights,
+                            &weightsVariation[index], 1 / _learningRate);
+        matrixAdditionFloat(_network->layers[index].biases,
+                            &biasesVariation[index], 1 / _learningRate);
     }
 }
 

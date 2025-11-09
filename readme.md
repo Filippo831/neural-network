@@ -9,9 +9,9 @@ trying to build a neural network using c from scratch
     - [x] weights calculation
     - [x] add biases calculation
     - [x] fix all the functions
-- [ ] make the backpropagation function
-    - [ ] adjust the weights values
-    - [ ] adjust the biases values
+- [x] make the backpropagation function
+    - [x] adjust the weights values
+    - [x] adjust the biases values
 - [ ] create the convolutional type of layer
 - [ ] make the neural network easily configurable
 - [ ] fix the way you add new layers because it's quite stupid at the moment. Make it less redundant. Maybe without a number of layer as a contraint but with an expandable vectore that can be modified dynamically
@@ -31,8 +31,5 @@ trying to build a neural network using c from scratch
 - sigmoid
 
 
-
-
-### note
 
 
