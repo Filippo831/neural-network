@@ -93,6 +93,7 @@ void matrixAdditionFloat(FloatMatrix *_left, FloatMatrix *_right,
  *   @param
  *   _predictions: value got from the feed forward process
  *   _targets: right result
+ *   _output: output matrix
  *
  *   @body
  *   compute the mean squared error of the predicted result compared to the
@@ -125,3 +126,13 @@ MatrixErrors transposeDotProductFloat(FloatMatrix *_left, FloatMatrix *_right);
  *
  */
 void normalizeInput(FloatMatrix *_input);
+
+/*
+ * @param
+ * _left: left operator, modified
+ * _right: right operator, not modified
+ *
+ * @body
+ * element-wise multiplication
+ */
+void multiplicationFloat(FloatMatrix *_left, FloatMatrix *_right);

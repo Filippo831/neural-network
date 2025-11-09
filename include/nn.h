@@ -103,7 +103,7 @@ void feedForwandSaveIntermediate(FloatMatrix *_input, NeuralNetwork *_network, F
  *
  */
 void backPropagation(float _learningRate, NeuralNetwork *_network,
-                     FloatMatrix *_input, FloatMatrix *_output, int _batchSize);
+                     FloatMatrix _input[], FloatMatrix _output[], int _batchSize);
 
 /*
  * @params

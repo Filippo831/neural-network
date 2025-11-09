@@ -133,6 +133,13 @@ void normalizeInput(FloatMatrix *_input) {
     // normalize the values
     for (int index = 0; index < _input->rows * _input->cols; index++) {
         _input->values[index] =
-            (_input->values[index] - minValue) / (maxValue - minValue) * (2) - 1;
+            (_input->values[index] - minValue) / (maxValue - minValue) * (2) -
+            1;
+    }
+}
+
+void multiplicationFloat(FloatMatrix *_left, FloatMatrix *_right) {
+    for (int index = 0; index < _left->rows * _left->cols; index++) {
+        _left->values[index] = _left->values[index] * _right->values[index];
     }
 }

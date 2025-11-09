@@ -85,8 +85,7 @@ void feedForward(FloatMatrix *_input, NeuralNetwork *_network) {
 
 void feedForwandSaveIntermediate(FloatMatrix *_input, NeuralNetwork *_network,
                                  FloatMatrix *_results) {
-    _results[0].values =
-        malloc(sizeof(float) * (_input->cols * _input->rows));
+    _results[0].values = malloc(sizeof(float) * (_input->cols * _input->rows));
 
     _results[0].cols = _input->cols;
     _results[0].rows = _input->rows;
@@ -125,7 +124,7 @@ void feedForwandSaveIntermediate(FloatMatrix *_input, NeuralNetwork *_network,
 }
 
 void backPropagation(float _learningRate, NeuralNetwork *_network,
-                     FloatMatrix *_input, FloatMatrix *_output,
+                     FloatMatrix _input[], FloatMatrix _output[],
                      int _batchSize) {
     // allocate memory to save biases variation
     FloatMatrix *biasesVariation =
@@ -159,7 +158,7 @@ void backPropagation(float _learningRate, NeuralNetwork *_network,
     // the values of weights and biases at the end of every batch
 
     // make _batchSize passes to train the neural network
-    for (int batch = 0; batch < _batchSize; batch++) {
+    for (int batchIndex = 0; batchIndex < _batchSize; batchIndex++) {
         // allocate memory to save intermediate results, add "+ 1" because we
         // want to include the input to this
         FloatMatrix *intermediateResult =
@@ -174,11 +173,11 @@ void backPropagation(float _learningRate, NeuralNetwork *_network,
 
         // forward propagation to find the calculated result and keep the
         // intermediate values
-        feedForwandSaveIntermediate(_input, _network, intermediateResult);
-
+        feedForwandSaveIntermediate(&_input[batchIndex], _network,
+                                    intermediateResult);
 
         // calculate the first error to the output
-        meanSquaredError(_network->output, _output);
+        meanSquaredError(_network->output, &_output[batchIndex]);
 
         // FIX: you have to write this thing again because it's wrong
         //
@@ -188,11 +187,27 @@ void backPropagation(float _learningRate, NeuralNetwork *_network,
             // multiply the cost result with the derivative of the activation
             // function
             sigmoidDerivative(_network->output);
+            multiplicationFloat(_network->output, &intermediateResult[index]);
 
-            // sum the value got to the delta matrix by the previous values and
-            // itself divided by the batch size to make an average
 
-            // matrixAdditionFloat(&deltas[index], _nn->output, _batchSize);
+            // update the biases variation average
+            matrixAdditionFloat(&biasesVariation[index], _network->output,
+                                _batchSize);
+            FloatMatrix *tempDelta;
+            tempDelta->cols = _network->output->cols;
+            tempDelta->rows = _network->output->rows;
+            tempDelta->values =
+                malloc(sizeof(float) * tempDelta->cols * tempDelta->rows);
+
+            // copy the value of delta into a temporary matrix
+            for (int deltaIndex = 0;
+                 deltaIndex < tempDelta->cols * tempDelta->rows; deltaIndex++) {
+                tempDelta->values[deltaIndex] =
+                    _network->output->values[deltaIndex];
+            }
+            // update the weights variation average
+            transposeDotProductFloat(&intermediateResult[index], tempDelta);
+            matrixAdditionFloat(&weightsVariation[index], tempDelta, 1);
 
             // dot prouct the previous result with the transpose of the weights
             // matrix to get the next error
