@@ -4,6 +4,7 @@ trying to build a neural network using c from scratch
 
 # TODO
 ## MUST
+### neural network
 - [x] insert type of layer into the layer type, figure out what return type to use. Probably it's a good idea to make error struct common between all activation functions to avoid issues
 - [x] make the forward propagation function
     - [x] weights calculation
@@ -19,17 +20,22 @@ trying to build a neural network using c from scratch
 **MAYBE**
 - [ ] insert the type of activation function inside the layer struct to change it dynamically
 
+### dataset
+- [ ] load the dataset
+- [ ] read the values and create matrixes with the values
+- [ ] divide the dataset in training set and validation set
+
 # DOCUMENTATION
 
-## Layer Types implemented
-### classic
+## neural network
+### Layer Types implemented
+#### classic
 - dot product between weights and input
 - sum biases
 - sigmoid to flatten values
 
-## Activation functions implemented
+### Activation functions implemented
 - sigmoid
 
 
-
-
+## dataset
