@@ -1,25 +1,18 @@
-# --- Makefile Template for C Project with CUnit ---
+# --- Makefile for C Project with CUnit + GTK Support ---
 
-# Directories:
-# - src/       : Main source files
-# - include/   : Header files
-# - tests/     : Test source files (must end with _test.c)
-# - build/     : Intermediate object files (.o)
-# - bin/       : Final executables
-# - lib/       : Placeholder for external libraries (optional)
-
-
-# Project Name (used for the final executable name)
+# Project Name
 PROJECT_NAME := my_c_project
 
-# Compiler and standard flags
+# Compiler
 CC := gcc
+
+# Standard Flags
 STD_CFLAGS := -Wall -Wextra -std=c11 -g
 
-# CFLAGS for release/optimized build
+# Release Flags
 CFLAGS := $(STD_CFLAGS) -O2
 
-# Directory paths
+# Directories
 SRCDIR := src
 INCLDIR := include
 BUILDDIR := build
@@ -27,122 +20,126 @@ BINDIR := bin
 TESTDIR := tests
 LIBDIR := lib
 
-# CUnit Linker and Include Flags
-LDFLAGS_CUNIT := -lcunit
-
-# Include search paths for headers
+# Include paths
 INCLUDES := -I$(INCLDIR)
 
-# Standard Linker flags (e.g., -lm for math)
+# Standard linker flags
 LDFLAGS := -lm
 
+# CUnit
+LDFLAGS_CUNIT := -lcunit
 
-# Find all source files in the source directory
+# --- GTK Support ---
+GTK_CFLAGS := $(shell pkg-config --cflags gtk4)
+GTK_LIBS   := $(shell pkg-config --libs gtk4)
+# For GTK3 use:
+# GTK_CFLAGS := $(shell pkg-config --cflags gtk+-3.0)
+# GTK_LIBS   := $(shell pkg-config --libs gtk+-3.0)
+
+# Source files
 SRC_FILES := $(wildcard $(SRCDIR)/*.c)
 
-# Define ALL object file paths in the build directory
+# Object files
 OBJ_FILES := $(patsubst $(SRCDIR)/%.c, $(BUILDDIR)/%.o, $(SRC_FILES))
 
-# --- FIX FOR MULTIPLE MAIN DEFINITION ---
-# 1. Identify the application's main object file (assuming src/main.c)
+# Identify main.o
 APP_MAIN_OBJECT := $(BUILDDIR)/main.o
 
-# 2. Define the list of application objects needed for tests (ALL objects excluding main.o)
-# This prevents the application's main() from conflicting with the test runner's main()
+# Non-main objects for tests
 APP_TEST_OBJS := $(filter-out $(APP_MAIN_OBJECT), $(OBJ_FILES))
-# --- END FIX ---
 
-# Test-specific files
+# Test sources
 TEST_SRC_FILES := $(wildcard $(TESTDIR)/*_test.c)
 
-# Define test object file paths (distinguished from main objects)
+# Test objects
 TEST_OBJ_FILES := $(patsubst $(TESTDIR)/%.c, $(BUILDDIR)/%.test.o, $(TEST_SRC_FILES))
 
-# Executable names
+# Executables
 MAIN_EXECUTABLE := $(BINDIR)/$(PROJECT_NAME)
 TEST_RUNNER := $(BINDIR)/$(PROJECT_NAME)_test
 
 
-.PHONY: all main tests clean rebuild dirs debug sanitize run_san
 
-# Default target: builds the main executable
+.PHONY: all main tests clean rebuild debug sanitize run_san
+
+
+# Default target
 all: main
 
-# Target to ensure build and bin directories exist (Prerequisite)
+run: $(MAIN_EXECUTABLE)
+	@./$(MAIN_EXECUTABLE)
+
+
+# Ensure build/bin dirs exist
 $(BUILDDIR) $(BINDIR):
 	@mkdir -p $@
 
 
+# --- Main executable ---
 main: $(MAIN_EXECUTABLE)
 
-run: ${MAIN_EXECUTABLE}
-	@./$(MAIN_EXECUTABLE)
-
 $(MAIN_EXECUTABLE): $(OBJ_FILES) | $(BINDIR)
-	@echo "=================================================="
 	@echo "Linking main executable: $@"
-	$(CC) $^ $(LDFLAGS) -o $@
+	$(CC) $^ $(LDFLAGS) $(GTK_LIBS) -o $@
 
-# Rule to compile main source files into objects
+
+# --- Compilation Rules (GTK-enabled) ---
 $(BUILDDIR)/%.o: $(SRCDIR)/%.c | $(BUILDDIR)
-	@echo "Compiling main: $< -> $@"
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	@echo "Compiling: $< -> $@"
+	$(CC) $(CFLAGS) $(GTK_CFLAGS) $(INCLUDES) -c $< -o $@
 
 
 
-
-# Test runner target: builds and runs the tests
+# --- Tests ---
 tests: $(TEST_RUNNER)
-	@echo "=================================================="
 	@echo "Running tests with CUnit..."
 	@./$(TEST_RUNNER)
 
-# Linking the test runner: *** NOW USES APP_TEST_OBJS INSTEAD OF OBJ_FILES ***
+# Test runner (does NOT link GTK unless your sources require it)
 $(TEST_RUNNER): $(APP_TEST_OBJS) $(TEST_OBJ_FILES) | $(BINDIR)
 	@echo "Linking test runner: $@"
 	$(CC) $^ $(LDFLAGS) $(LDFLAGS_CUNIT) -o $@
 
-# Rule to compile test source files
+# Test object compilation
 $(BUILDDIR)/%.test.o: $(TESTDIR)/%.c | $(BUILDDIR)
 	@echo "Compiling test: $< -> $@"
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-# --- 6. Utility Targets ---
 
+
+# --- Cleaning and rebuilding ---
 clean:
-	@echo "Cleaning build and bin directories..."
-	@rm -rf $(BUILDDIR)
-	@rm -rf $(BINDIR)
+	@echo "Cleaning..."
+	@rm -rf $(BUILDDIR) $(BINDIR)
 
 rebuild: clean all tests
 
-# Target to build with debug flags enabled
+
+
+# --- Debug build with GTK ---
 debug:
-	@echo "Starting debug build..."
-	@make CFLAGS='$(STD_CFLAGS) -DDEBUG' clean all tests
+	@echo "DEBUG build..."
+	@$(MAKE) CFLAGS='$(STD_CFLAGS) -DDEBUG' clean all tests
 
 
+
+# --- Sanitizer Build ---
 SAN_CFLAGS := $(STD_CFLAGS) -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer
 SAN_EXECUTABLE := $(BINDIR)/$(PROJECT_NAME)_san
 
 sanitize: $(SAN_EXECUTABLE)
 
 run_san: sanitize
-	@echo "=================================================="
-	@echo "Running sanitized executable: $@"
+	@echo "Running sanitized executable..."
 	@./$(SAN_EXECUTABLE)
 
-# Rule to compile ALL source files into objects with SANITIZER flags
-# We use a pattern rule specific to the build directory for sanitized objects
 $(BUILDDIR)/%.san.o: $(SRCDIR)/%.c | $(BUILDDIR)
 	@echo "Compiling sanitized: $< -> $@"
-	$(CC) $(SAN_CFLAGS) $(INCLUDES) -c $< -o $@
+	$(CC) $(SAN_CFLAGS) $(GTK_CFLAGS) $(INCLUDES) -c $< -o $@
 
-# Define all sanitized object file paths
 SAN_OBJ_FILES := $(patsubst $(SRCDIR)/%.c, $(BUILDDIR)/%.san.o, $(SRC_FILES))
 
-# Linking the sanitized main executable
 $(SAN_EXECUTABLE): $(SAN_OBJ_FILES) | $(BINDIR)
-	@echo "=================================================="
 	@echo "Linking sanitized executable: $@"
-	$(CC) $^ $(LDFLAGS) $(SAN_CFLAGS) -o $@
+	$(CC) $^ $(LDFLAGS) $(GTK_LIBS) $(SAN_CFLAGS) -o $@
+

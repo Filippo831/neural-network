@@ -39,3 +39,5 @@ trying to build a neural network using c from scratch
 
 
 ## dataset
+Using the mnist dataset with raw values from this link
+https://pypi.org/project/mnist-datasets/

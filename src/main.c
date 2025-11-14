@@ -1,35 +1,24 @@
 #include "../include/main.h"
-#include "../include/nn.h"
 
-#include <stdio.h>
+#include <gtk/gtk.h>
+
+static void activate(GtkApplication *app, gpointer user_data) {
+    GtkWidget *window;
+
+    window = gtk_application_window_new(app);
+    gtk_window_set_title(GTK_WINDOW(window), "Window");
+    gtk_window_set_default_size(GTK_WINDOW(window), 200, 200);
+    gtk_window_present(GTK_WINDOW(window));
+}
 
 int main(int argc, char **argv) {
-    NeuralNetwork *nn = createNeuralNetwork(3, 10, 10);
+    GtkApplication *app;
+    int status;
 
-    Layer *layer1 = initLayer(10, 100, STANDART);
-    addLayer(nn, layer1);
+    app = gtk_application_new("org.gtk.example", G_APPLICATION_DEFAULT_FLAGS);
+    g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
+    status = g_application_run(G_APPLICATION(app), argc, argv);
+    g_object_unref(app);
 
-    Layer *layer2 = initLayer(100, 20, STANDART);
-    addLayer(nn, layer2);
-
-    Layer *layer3 = initLayer(20, 10, STANDART);
-    addLayer(nn, layer3);
-
-    FloatMatrix input;
-    input.cols = 1;
-    input.rows = 10;
-    float inputValues[] = {10, 3, 8, 6, 7, 9, 7, 8, 9, 9};
-    input.values = inputValues;
-
-    feedForward(&input, nn);
-
-    printf("\n");
-    for (int index = 0; index < 10; index++) {
-        printf("%f, ", nn->output->values[index]);
-    }
-    printf("\n");
-    
-
-    freeNeuralNetwork(nn);
-    return 0;
+    return status;
 }
