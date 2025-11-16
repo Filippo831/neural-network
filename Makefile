@@ -1,145 +1,106 @@
-# --- Makefile for C Project with CUnit + GTK Support ---
+# --- Project settings ---
+PROJECT := my_c_project
 
-# Project Name
-PROJECT_NAME := my_c_project
-
-# Compiler
 CC := gcc
-
-# Standard Flags
-STD_CFLAGS := -Wall -Wextra -std=c11 -g
-
-# Release Flags
-CFLAGS := $(STD_CFLAGS) -O2
-
-# Directories
-SRCDIR := src
-INCLDIR := include
-BUILDDIR := build
-BINDIR := bin
-TESTDIR := tests
-LIBDIR := lib
-
-# Include paths
-INCLUDES := -I$(INCLDIR)
-
-# Standard linker flags
+STD_FLAGS := -Wall -Wextra -std=c11 -g
+CFLAGS := $(STD_FLAGS) -O2
 LDFLAGS := -lm
 
-# CUnit
-LDFLAGS_CUNIT := -lcunit
+# Optional GTK (currently disabled)
+GTK_CFLAGS :=
+GTK_LIBS   :=
 
-# --- GTK Support ---
-GTK_CFLAGS := $(shell pkg-config --cflags gtk4)
-GTK_LIBS   := $(shell pkg-config --libs gtk4)
-# For GTK3 use:
-# GTK_CFLAGS := $(shell pkg-config --cflags gtk+-3.0)
-# GTK_LIBS   := $(shell pkg-config --libs gtk+-3.0)
+# Directories
+SRC_DIR := src
+INC_DIR := include
+TEST_DIR := tests
+BUILD_DIR := build
+BIN_DIR := bin
 
-# Source files
-SRC_FILES := $(wildcard $(SRCDIR)/*.c)
+INCLUDES := -I$(INC_DIR)
 
-# Object files
-OBJ_FILES := $(patsubst $(SRCDIR)/%.c, $(BUILDDIR)/%.o, $(SRC_FILES))
+# --- Source files ---
+SRC_FILES := $(wildcard $(SRC_DIR)/*.c)
+OBJ_FILES := $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRC_FILES))
 
-# Identify main.o
-APP_MAIN_OBJECT := $(BUILDDIR)/main.o
+# Main program object (exclude from test builds)
+MAIN_OBJ := $(BUILD_DIR)/main.o
+APP_OBJS := $(filter-out $(MAIN_OBJ),$(OBJ_FILES))
 
-# Non-main objects for tests
-APP_TEST_OBJS := $(filter-out $(APP_MAIN_OBJECT), $(OBJ_FILES))
+# --- Test files ---
+TEST_SRC := $(wildcard $(TEST_DIR)/*_test.c)
+TEST_OBJS := $(patsubst $(TEST_DIR)/%_test.c,$(BUILD_DIR)/%_test.o,$(TEST_SRC))
 
-# Test sources
-TEST_SRC_FILES := $(wildcard $(TESTDIR)/*_test.c)
-
-# Test objects
-TEST_OBJ_FILES := $(patsubst $(TESTDIR)/%.c, $(BUILDDIR)/%.test.o, $(TEST_SRC_FILES))
-
-# Executables
-MAIN_EXECUTABLE := $(BINDIR)/$(PROJECT_NAME)
-TEST_RUNNER := $(BINDIR)/$(PROJECT_NAME)_test
+# --- Executables ---
+MAIN_EXE := $(BIN_DIR)/$(PROJECT)
+TEST_EXE := $(BIN_DIR)/$(PROJECT)_test
 
 
-
-.PHONY: all main tests clean rebuild debug sanitize run_san
+.PHONY: all run tests clean rebuild debug sanitize run_san
 
 
 # Default target
-all: main
+all: $(MAIN_EXE)
 
-run: $(MAIN_EXECUTABLE)
-	@./$(MAIN_EXECUTABLE)
-
-
-# Ensure build/bin dirs exist
-$(BUILDDIR) $(BINDIR):
-	@mkdir -p $@
+run: $(MAIN_EXE)
+	./$(MAIN_EXE)
 
 
-# --- Main executable ---
-main: $(MAIN_EXECUTABLE)
+# Create build/bin dirs when needed
+$(BUILD_DIR) $(BIN_DIR):
+	mkdir -p $@
 
-$(MAIN_EXECUTABLE): $(OBJ_FILES) | $(BINDIR)
-	@echo "Linking main executable: $@"
+
+# --- Main program build ---
+$(MAIN_EXE): $(OBJ_FILES) | $(BIN_DIR)
+	@echo "Linking main executable..."
 	$(CC) $^ $(LDFLAGS) $(GTK_LIBS) -o $@
 
 
-# --- Compilation Rules (GTK-enabled) ---
-$(BUILDDIR)/%.o: $(SRCDIR)/%.c | $(BUILDDIR)
-	@echo "Compiling: $< -> $@"
+# --- Compile application sources ---
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
+	@echo "Compiling $<"
 	$(CC) $(CFLAGS) $(GTK_CFLAGS) $(INCLUDES) -c $< -o $@
 
 
+# --- Test Build ---
+test: $(TEST_EXE)
+	@echo "Running tests..."
+	./$(TEST_EXE)
 
-# --- Tests ---
-tests: $(TEST_RUNNER)
-	@echo "Running tests with CUnit..."
-	@./$(TEST_RUNNER)
+$(TEST_EXE): $(APP_OBJS) $(TEST_OBJS) | $(BIN_DIR)
+	@echo "Linking test runner..."
+	$(CC) $^ -lcunit $(LDFLAGS) -o $@
 
-# Test runner (does NOT link GTK unless your sources require it)
-$(TEST_RUNNER): $(APP_TEST_OBJS) $(TEST_OBJ_FILES) | $(BINDIR)
-	@echo "Linking test runner: $@"
-	$(CC) $^ $(LDFLAGS) $(LDFLAGS_CUNIT) -o $@
-
-# Test object compilation
-$(BUILDDIR)/%.test.o: $(TESTDIR)/%.c | $(BUILDDIR)
-	@echo "Compiling test: $< -> $@"
+$(BUILD_DIR)/%_test.o: $(TEST_DIR)/%_test.c | $(BUILD_DIR)
+	@echo "Compiling test $<"
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 
-
-# --- Cleaning and rebuilding ---
+# --- Cleaning ---
 clean:
-	@echo "Cleaning..."
-	@rm -rf $(BUILDDIR) $(BINDIR)
+	rm -rf $(BUILD_DIR) $(BIN_DIR)
 
 rebuild: clean all tests
 
 
-
-# --- Debug build with GTK ---
+# --- Debug build ---
 debug:
-	@echo "DEBUG build..."
-	@$(MAKE) CFLAGS='$(STD_CFLAGS) -DDEBUG' clean all tests
+	$(MAKE) CFLAGS='$(STD_FLAGS) -DDEBUG' rebuild
 
 
+# --- Sanitized build ---
+SAN_FLAGS := $(STD_FLAGS) -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer
+SAN_EXE := $(BIN_DIR)/$(PROJECT)_san
 
-# --- Sanitizer Build ---
-SAN_CFLAGS := $(STD_CFLAGS) -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer
-SAN_EXECUTABLE := $(BINDIR)/$(PROJECT_NAME)_san
+sanitize: $(SAN_EXE)
 
-sanitize: $(SAN_EXECUTABLE)
+$(SAN_EXE): $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.san.o,$(SRC_FILES)) | $(BIN_DIR)
+	$(CC) $^ $(SAN_FLAGS) $(LDFLAGS) $(GTK_LIBS) -o $@
+
+$(BUILD_DIR)/%.san.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
+	$(CC) $(SAN_FLAGS) $(GTK_CFLAGS) $(INCLUDES) -c $< -o $@
 
 run_san: sanitize
-	@echo "Running sanitized executable..."
-	@./$(SAN_EXECUTABLE)
-
-$(BUILDDIR)/%.san.o: $(SRCDIR)/%.c | $(BUILDDIR)
-	@echo "Compiling sanitized: $< -> $@"
-	$(CC) $(SAN_CFLAGS) $(GTK_CFLAGS) $(INCLUDES) -c $< -o $@
-
-SAN_OBJ_FILES := $(patsubst $(SRCDIR)/%.c, $(BUILDDIR)/%.san.o, $(SRC_FILES))
-
-$(SAN_EXECUTABLE): $(SAN_OBJ_FILES) | $(BINDIR)
-	@echo "Linking sanitized executable: $@"
-	$(CC) $^ $(LDFLAGS) $(GTK_LIBS) $(SAN_CFLAGS) -o $@
+	./$(SAN_EXE)
 

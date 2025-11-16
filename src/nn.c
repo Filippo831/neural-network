@@ -43,11 +43,6 @@ void feedForward(FloatMatrix *_input, NeuralNetwork *_network) {
 
     normalizeInput(input);
 
-    // print values inside input
-    for (int i = 0; i < input->rows * input->cols; i++) {
-        printf("Input value %d: %f\n", i, input->values[i]);
-    }
-
     // NOTE: using currentLayersNumber instead of totalLayersNumber because
     // probably it's safer but see if there is a better implementation of this.
 

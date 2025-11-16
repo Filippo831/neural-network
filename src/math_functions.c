@@ -102,7 +102,6 @@ MatrixErrors transposeDotProductFloat(FloatMatrix *_left, FloatMatrix *_right) {
                                       getIndexMatrix(index, c, _right);
             }
             resultMatrix[matrixIndex++] = intermediateResult;
-            printf("\n");
         }
     }
 

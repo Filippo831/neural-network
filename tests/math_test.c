@@ -260,24 +260,15 @@ void test_transpose_dot_product(void) {
 }
 
 /* Suite Initialization and Cleanup Functions (optional, but good practice) */
-int init_suite(void) {
-    // Setup logic here (e.g., initializing a resource)
-    return 0; // Return 0 on success
-}
 
-int clean_suite(void) {
-    // Cleanup logic here (e.g., freeing a resource)
-    return 0; // Return 0 on success
-}
-
-int main(void) {
+int math_main(void) {
     // Initialize CUnit test registry
     if (CU_initialize_registry() != CUE_SUCCESS)
         return CU_get_error();
 
     // Add a suite to the registry
     CU_pSuite pSuite =
-        CU_add_suite("Vector Math Suite", init_suite, clean_suite);
+        CU_add_suite("Vector Math Suite", NULL, NULL);
     if (pSuite == NULL) {
         CU_cleanup_registry();
         return CU_get_error();
