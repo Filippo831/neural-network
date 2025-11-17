@@ -1,11 +1,20 @@
-#include "../include/dataset.h"
+#include "dataset.h"
 #include <CUnit/Basic.h>
 #include <CUnit/CUnit.h>
 
 void test_database_metadata_readings(void) {
-    FILE *trainImages = fopen("~/Desktop/projects/neural_network/dataset/t10k-images-idx3-ubyte", "rb");
-    FILE *trainLabels = fopen("~/Desktop/projects/neural_network/dataset/t10k-labels-idx1-ubyte", "rb");
-    readMetadata(trainImages, trainLabels);
+    FILE *trainImages = fopen(
+        "~/Desktop/projects/neural_network/dataset/t10k-images-idx3-ubyte",
+        "rb");
+    FILE *trainLabels = fopen(
+        "~/Desktop/projects/neural_network/dataset/t10k-labels-idx1-ubyte",
+        "rb");
+
+    DatasetMetadata *result = readMetadata(trainImages, trainLabels);
+
+    CU_ASSERT_EQUAL(result->colSize, 28);
+    CU_ASSERT_EQUAL(result->rowSize, 28);
+    CU_ASSERT_EQUAL(result->length, 10000);
 }
 
 int init_suite(void) {

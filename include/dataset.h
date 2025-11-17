@@ -1,15 +1,16 @@
 #pragma once
 
+#include <stdint.h>
 #include <stdio.h>
 
 #define IMAGE_HEADER_SIZE 16
 #define LABER_HEADER_SIZE 8
 
-typedef struct datasetMetadata{
-    int length;
-    int rowSize;
-    int colSize;
-} datasetMetadata;
+typedef struct DatasetMetadata{
+    uint32_t length;
+    uint32_t rowSize;
+    uint32_t colSize;
+} DatasetMetadata;
 
 /*
  * @param
@@ -37,4 +38,4 @@ typedef struct datasetMetadata{
  *
  *
  */
-datasetMetadata *readMetadata(FILE *_imageFile, FILE *_labelFile);
+DatasetMetadata *readMetadata(FILE *_imageFile, FILE *_labelFile);
