@@ -41,6 +41,3 @@ trying to build a neural network using c from scratch
 ## dataset
 Using the mnist dataset with raw values from this link
 https://pypi.org/project/mnist-datasets/
-
-# note
-change the endianess of the reading because it is reading the opposite way

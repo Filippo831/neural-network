@@ -3,18 +3,27 @@
 #include <stdio.h>
 
 int main(int argc, char **argv) {
-    FILE *trainImages = fopen("/home/filippoa/Desktop/projects/neural_network/dataset/t10k-images-idx3-ubyte", "rb");
+    FILE *trainImages = fopen("/home/filippoa/Desktop/projects/neural_network/"
+                              "dataset/t10k-images-idx3-ubyte",
+                              "rb");
     if (!trainImages) {
         printf("error opening trainImage file\n");
         return 0;
     }
-    FILE *trainLabels = fopen("/home/filippoa/Desktop/projects/neural_network/dataset/t10k-labels-idx1-ubyte", "rb");
+    FILE *trainLabels = fopen("/home/filippoa/Desktop/projects/neural_network/"
+                              "dataset/t10k-labels-idx1-ubyte",
+                              "rb");
     if (!trainLabels) {
         printf("error opening trainLabels file\n");
         return 0;
     }
 
     DatasetMetadata *result = readMetadata(trainImages, trainLabels);
+
+    // print result values
+    printf("colSize: %d\n", result->colSize);
+    printf("rowSize: %d\n", result->rowSize);
+    printf("length: %d\n", result->length);
 
     return 0;
 }
