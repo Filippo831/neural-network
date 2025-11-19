@@ -46,15 +46,17 @@ void feedForward(FloatMatrix *_input, NeuralNetwork *_network) {
     // NOTE: using currentLayersNumber instead of totalLayersNumber because
     // probably it's safer but see if there is a better implementation of this.
 
-    FloatMatrix *prev_input = input;
+    FloatMatrix *prev_input;
+    prev_input = input;
 
     for (int index = 0; index < _network->currentLayersNumber; index++) {
 
         FloatMatrix *linear_output = malloc(sizeof(FloatMatrix));
 
         // dot product with the weights
-        _network->layers[index].layerFunction(_network->layers[index].weights,
+        MatrixErrors result = _network->layers[index].layerFunction(_network->layers[index].weights,
                                               prev_input, linear_output);
+        printf("error result %d\n", result);
 
         free(prev_input->values);
         free(prev_input);

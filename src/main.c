@@ -37,6 +37,7 @@ int main() {
 
     FloatMatrix *input = uint8_tArrayToFloatMatrix(image, result->colSize * result->rowSize);
 
+
     feedForward(input, nn);
 
     for (int index = 0; index < 10; index++) {

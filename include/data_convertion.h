@@ -8,7 +8,8 @@
  * _size: the length of the array
  *
  * @body
- * create a row matrix (FLoatMatrix) with the values inside the heap
+ * create a column (used for input data for the neural network) matrix
+ * (FLoatMatrix) with the values inside the heap
  *
  * @return
  * return the pointer to the matrix location
