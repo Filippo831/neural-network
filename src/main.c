@@ -1,8 +1,10 @@
 #include "../include/main.h"
+#include "data_convertion.h"
 #include "dataset.h"
+#include "nn.h"
 #include <stdio.h>
 
-int main(int argc, char **argv) {
+int main() {
     FILE *trainImages = fopen("/home/filippoa/Desktop/projects/neural_network/"
                               "dataset/t10k-images-idx3-ubyte",
                               "rb");
@@ -20,10 +22,26 @@ int main(int argc, char **argv) {
 
     DatasetMetadata *result = readMetadata(trainImages, trainLabels);
 
-    // print result values
-    printf("colSize: %d\n", result->colSize);
-    printf("rowSize: %d\n", result->rowSize);
-    printf("length: %d\n", result->length);
+    uint8_t *image = readImageBatch(1, 1, trainImages);
+
+    NeuralNetwork *nn = createNeuralNetwork(3, 784, 10);
+
+    Layer *layer1 = initLayer(784, 100, STANDART);
+    addLayer(nn, layer1);
+
+    Layer *layer2 = initLayer(100, 20, STANDART);
+    addLayer(nn, layer2);
+
+    Layer *layer3 = initLayer(20, 10, STANDART);
+    addLayer(nn, layer3);
+
+    FloatMatrix *input = uint8_tArrayToFloatMatrix(image, result->colSize * result->rowSize);
+
+    feedForward(input, nn);
+
+    for (int index = 0; index < 10; index++) {
+        printf("%d: %f\n", index, nn->output->values[index]);
+    }
 
     return 0;
 }

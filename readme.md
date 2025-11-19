@@ -1,4 +1,4 @@
-# neural network from scatch
+# neural network from scratch
 trying to build a neural network using c from scratch
 
 
@@ -37,7 +37,23 @@ trying to build a neural network using c from scratch
 ### Activation functions implemented
 - sigmoid
 
+### example of neural network definition
+```c
+NeuralNetwork *nn = createNeuralNetwork(3, 10, 10);
+
+Layer *layer1 = initLayer(10, 100, STANDART);
+addLayer(nn, layer1);
+
+Layer *layer2 = initLayer(100, 20, STANDART);
+addLayer(nn, layer2);
+
+Layer *layer3 = initLayer(20, 10, STANDART);
+addLayer(nn, layer3);
+```
 
 ## dataset
 Using the mnist dataset with raw values from this link
 https://pypi.org/project/mnist-datasets/
+
+# note
+there is a segmentation fault in nn.c:59, try to understand whats going on

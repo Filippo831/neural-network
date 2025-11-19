@@ -174,8 +174,6 @@ void backPropagation(float _learningRate, NeuralNetwork *_network,
         // calculate the first error to the output
         meanSquaredError(_network->output, &_output[batchIndex]);
 
-        // FIX: you have to write this thing again because it's wrong
-        //
         // for each layer from the last to first
         for (int index = _network->currentLayersNumber - 1; index >= 0;
              index--) {
@@ -187,7 +185,7 @@ void backPropagation(float _learningRate, NeuralNetwork *_network,
             // update the biases variation average
             matrixAdditionFloat(&biasesVariation[index], _network->output,
                                 _batchSize);
-            FloatMatrix *tempDelta;
+            FloatMatrix *tempDelta = NULL;
             tempDelta->cols = _network->output->cols;
             tempDelta->rows = _network->output->rows;
             tempDelta->values =
