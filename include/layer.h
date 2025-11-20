@@ -5,6 +5,27 @@
 typedef enum LayerType { STANDART, CONVOLUTIONAL } LayerType;
 
 /*
+ * Additional information to provide to activation functions
+ *
+ * @params
+ * type = type of layer
+ * kernelSize = size of one edge of the kernel, therefore the kernel matrix is
+ * kernelSize x kernelSize padding = how many layers of 0 to apply to the border
+ * of the input matrix
+ * stride = amount of displacement at every movement
+ * filters = how many different kernels to use, the output will be then the size
+ * of a single result multiplied by the amount of filters
+ *
+ */
+typedef struct LayerParams {
+    LayerType type;
+    int kernelSize;
+    int padding;
+    int stride;
+    int filters;
+} LayerParams;
+
+/*
  *   @params
  *   inputs: how many nodes are in the previous layer
  *   nodes: nodes of this layer
@@ -23,7 +44,8 @@ typedef struct Layer {
     FloatMatrix *weights;
 
     // FloatMatrix *_leftMatrix, FloatMatrix *_rightMatrix, FloatMatrix *_output
-    MatrixErrors (*layerFunction)(FloatMatrix *, FloatMatrix *, FloatMatrix *, void *);
+    MatrixErrors (*layerFunction)(FloatMatrix *, FloatMatrix *, FloatMatrix *,
+                                  LayerParams *);
 } Layer;
 
 /*

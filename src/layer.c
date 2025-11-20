@@ -1,6 +1,6 @@
 #include "../include/layer.h"
-#include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 void initWeights(FloatMatrix *_input) {
     srand(time(NULL));
