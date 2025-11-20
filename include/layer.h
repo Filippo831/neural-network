@@ -1,7 +1,6 @@
 #pragma once
 #include "./math_functions.h"
-#include <stdlib.h>
-#include <time.h>
+#include <stdarg.h>
 
 typedef enum LayerType { STANDART, CONVOLUTIONAL } LayerType;
 
@@ -24,8 +23,7 @@ typedef struct Layer {
     FloatMatrix *weights;
 
     // FloatMatrix *_leftMatrix, FloatMatrix *_rightMatrix, FloatMatrix *_output
-    MatrixErrors (*layerFunction)(FloatMatrix *, FloatMatrix *,
-                                         FloatMatrix *);
+    MatrixErrors (*layerFunction)(FloatMatrix *, FloatMatrix *, FloatMatrix *, void *);
 } Layer;
 
 /*

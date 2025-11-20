@@ -55,7 +55,7 @@ void feedForward(FloatMatrix *_input, NeuralNetwork *_network) {
 
         // dot product with the weights
         MatrixErrors result = _network->layers[index].layerFunction(_network->layers[index].weights,
-                                              prev_input, linear_output);
+                                              prev_input, linear_output, NULL);
         printf("error result %d\n", result);
 
         free(prev_input->values);
@@ -105,7 +105,7 @@ void feedForwandSaveIntermediate(FloatMatrix *_input, NeuralNetwork *_network,
         // dot product with the weights
         _network->layers[index].layerFunction(_network->layers[index].weights,
                                               &_results[index],
-                                              &_results[index + 1]);
+                                              &_results[index + 1], NULL);
 
         // add the biases
         matrixAdditionFloat(linear_output, _network->layers[index].biases, 1);

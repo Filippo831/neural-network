@@ -30,7 +30,7 @@ void test_dot_product_correct(void) {
 
     // ------------------- Perform Dot Product -------------------
     FloatMatrix c;
-    int error = dotProductFloat(&a, &b, &c);
+    int error = dotProductFloat(&a, &b, &c, NULL);
 
     // ------------------- Check for Errors -------------------
     if (error != NO_ERROR) {
@@ -74,7 +74,7 @@ void test_dot_product_correct_2(void) {
 
     FloatMatrix c;
 
-    int error = dotProductFloat(&a, &b, &c);
+    int error = dotProductFloat(&a, &b, &c, NULL);
 
     CU_ASSERT_EQUAL(error, NO_ERROR);
 
@@ -116,7 +116,7 @@ void test_dot_product_wrong_sizes(void) {
 
     // ------------------- Perform Dot Product -------------------
     FloatMatrix c;
-    int error = dotProductFloat(&a, &b, &c);
+    int error = dotProductFloat(&a, &b, &c, NULL);
 
     // ------------------- Check for WRONG_SIZES Error -------------------
     CU_ASSERT_EQUAL(error, WRONG_SIZES);

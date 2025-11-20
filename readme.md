@@ -56,5 +56,5 @@ Using the mnist dataset with raw values from this link
 https://pypi.org/project/mnist-datasets/
 
 # note
-To implement different activation function using the same pointer to function add some optional parameter as a vector I think that any layer type can use as they want because otherwise I don't know how to do that
+to make the layer function variable use a struct that holds all the possible variables and the enum value to see what type of layer it is, then add this struct to the layer function parameter and depending on the situation decide if to use the values or not
 

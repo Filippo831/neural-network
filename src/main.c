@@ -1,6 +1,7 @@
 #include "../include/main.h"
 #include "data_convertion.h"
 #include "dataset.h"
+#include "math_functions.h"
 #include "nn.h"
 #include <stdio.h>
 
@@ -43,6 +44,9 @@ int main() {
     for (int index = 0; index < 10; index++) {
         printf("%d: %f\n", index, nn->output->values[index]);
     }
+
+    int parameters[] = {10};
+    convolutionFloat(NULL, NULL, NULL, parameters);
 
     return 0;
 }

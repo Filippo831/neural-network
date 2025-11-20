@@ -1,6 +1,6 @@
 #pragma once
 #include <gsl/gsl_matrix.h>
-#include <math.h>
+#include <stdarg.h>
 
 typedef struct FloatMatrix {
     float *values;
@@ -44,8 +44,10 @@ void sigmoidDerivative(FloatMatrix *_input);
 
 /*
  *   @params
- *   left: left matrix
- *   right: right matrix
+ *   _left: left matrix
+ *   _right: right matrix
+ *   _result: holds the result matrix
+ *   _optional: pointer to optional parameters
  *
  *   @body
  *   compute the dot product between 2 matrices
@@ -60,12 +62,26 @@ typedef enum MatrixErrors {
 } MatrixErrors;
 
 MatrixErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
-                             FloatMatrix *_result);
+                             FloatMatrix *_result, void *optional);
 
-
-
+/*
+ *   @params
+ *   _left: left matrix
+ *   _right: right matrix
+ *   _result: result matrix
+ *   _optional:
+ *      int: kernel size
+ *      int: stride
+ *      int: padding
+ *
+ *   @body
+ *   compute the 2d convolutionof the matrix
+ *
+ *   @return
+ *   correct: return enum with error specific to this calculation
+ */
 MatrixErrors convolutionFloat(FloatMatrix *_left, FloatMatrix *_right,
-                             FloatMatrix *_result);
+                              FloatMatrix *_result, void *_optional);
 /*
  *  @param
  *  _predicted: predicted values that came from the NN

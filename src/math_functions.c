@@ -23,7 +23,11 @@ float getIndexMatrix(int _row, int _col, FloatMatrix *_matrix) {
 };
 
 MatrixErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
-                             FloatMatrix *_result) {
+                             FloatMatrix *_result, void *_optional) {
+    // TODO: to change with a more decent error, temporary implementation
+    if (_optional != NULL) {
+        return WRONG_SIZES;
+    }
 
     if (_left->cols != _right->rows) {
         return WRONG_SIZES;
@@ -49,6 +53,12 @@ MatrixErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
 
     _result->values = resultMatrix;
     return NO_ERROR;
+}
+
+MatrixErrors convolutionFloat(FloatMatrix *_left, FloatMatrix *_right,
+                              FloatMatrix *_result, void *_optional) {
+    printf("%d\n", *(int *)_optional);
+    return 0;
 }
 
 float loss(FloatMatrix *_predicted, FloatMatrix *_actual) {
