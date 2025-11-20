@@ -56,4 +56,5 @@ Using the mnist dataset with raw values from this link
 https://pypi.org/project/mnist-datasets/
 
 # note
-there is a segmentation fault in nn.c:59, try to understand whats going on
+To implement different activation function using the same pointer to function add some optional parameter as a vector I think that any layer type can use as they want because otherwise I don't know how to do that
+

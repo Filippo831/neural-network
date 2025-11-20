@@ -62,6 +62,10 @@ typedef enum MatrixErrors {
 MatrixErrors dotProductFloat(FloatMatrix *_left, FloatMatrix *_right,
                              FloatMatrix *_result);
 
+
+
+MatrixErrors convolutionFloat(FloatMatrix *_left, FloatMatrix *_right,
+                             FloatMatrix *_result);
 /*
  *  @param
  *  _predicted: predicted values that came from the NN
